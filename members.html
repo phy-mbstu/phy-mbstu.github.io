@@ -748,19 +748,21 @@
 
                         const memberCard = `
                             <div class="member-card rounded-lg p-4 sm:p-5 flex flex-col h-full ${cardGradient}">
-                                <!-- Header Section -->
-                                <div class="flex items-start space-x-3 mb-3">
-                                    <img class="h-12 w-12 sm:h-14 sm:w-14 rounded-full profile-img shadow-md border-2 border-white" 
-                                         src="${profilePhotoUrl}" 
-                                         alt="Profile of ${member.name}"
-                                         loading="lazy"
-                                         onerror="this.src='${generateInitialsPlaceholder(member.name)}'">
-                                    <div class="flex-1 min-w-0">
-                                        <h3 class="text-base sm:text-lg font-bold text-gray-800 truncate">${member.name}</h3>
-                                        ${batchInfoHTML}
-                                        <div class="mt-1">${membershipTypeHTML}</div>
-                                    </div>
-                                </div>
+								<!-- Header Section -->
+								<div class="flex items-start space-x-4 mb-4">
+								    <div class="flex-shrink-0">
+								        <img class="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover shadow-md border-2 border-white" 
+								             src="${profilePhotoUrl}" 
+								             alt="Profile of ${member.name}"
+								             loading="lazy"
+								             onerror="this.src='${generateInitialsPlaceholder(member.name)}'">
+								    </div>
+								    <div class="flex-1 min-w-0">
+								        <h3 class="text-base sm:text-lg font-bold text-gray-800 truncate">${member.name}</h3>
+								        ${batchInfoHTML}
+								        <div class="mt-1">${membershipTypeHTML}</div>
+								    </div>
+								</div>
                                 
                                 <!-- Education -->
                                 <div class="mb-3">
@@ -923,5 +925,6 @@
 </body>
 
 </html>
+
 
 
