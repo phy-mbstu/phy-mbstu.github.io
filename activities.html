@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function loadNewsFromFile() {
         try {
-            const response = await fetch('assets/news.txt');
+            const response = await fetch('assets/activites.txt');
             const text = await response.text();
             const newsItems = parseNewsText(text);
             renderContent(newsItems);
@@ -258,5 +258,6 @@ document.addEventListener('DOMContentLoaded', function () {
 </body>
 
 </html>
+
 
 
