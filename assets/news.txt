@@ -1,0 +1,6 @@
+Title: Z got PhD position
+Description: Our alumnus Z has been accepted into a prestigious PhD program in Quantum Physics at Stanford University. This remarkable achievement showcases the quality of education at MBSTU Physics Department.
+Photo: Zphd.png
+Category: achievement
+Date: 2024-06-10
+Author: Admin
