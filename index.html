@@ -795,29 +795,26 @@
         renderAllMarkers();
     }
 
-    function createCustomIcon(memberName, photoUrl) {
-        const initials = memberName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-        
-        // Use the same photo processing as members.html
-        const processedPhotoUrl = getProfilePhotoUrl(photoUrl, memberName);
-        
-        const htmlContent = `
-            <div class="w-full h-full rounded-full overflow-hidden">
-                <img src="${processedPhotoUrl}" 
-                     class="w-full h-full object-cover" 
-                     alt="${memberName}"
-                     onerror="this.src='${generateInitialsPlaceholder(memberName)}'">
-            </div>
-        `;
-
-        return L.divIcon({
-            className: 'custom-marker marker-blue',
-            html: htmlContent,
-            iconSize: [48, 48],
-            iconAnchor: [24, 48],
-            popupAnchor: [0, -48]
-        });
-    }
+	function createCustomIcon(memberName, photoUrl) {
+	    const processedPhotoUrl = getProfilePhotoUrl(photoUrl, memberName);
+	    
+	    const htmlContent = `
+	        <div class="w-full h-full rounded-full overflow-hidden bg-white">
+	            <img src="${processedPhotoUrl}" 
+	                 class="w-full h-full object-cover" 
+	                 alt="${memberName}"
+	                 onerror="this.src='${generateInitialsPlaceholder(memberName)}'">
+	        </div>
+	    `;
+	
+	    return L.divIcon({
+	        className: 'custom-marker',
+	        html: htmlContent,
+	        iconSize: [48, 48],
+	        iconAnchor: [24, 48],  // Center bottom
+	        popupAnchor: [0, -48]
+	    });
+	}
 
     function renderAllMarkers() {
         markers.forEach(marker => map.removeLayer(marker));
