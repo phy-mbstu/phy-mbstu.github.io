@@ -235,9 +235,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const itemCard = `
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                     ${item.imageUrl ? `
-                        <div class="w-full h-48 bg-gray-100 overflow-hidden">
+                        <div class="aspect-video overflow-hidden">
                             <img src="${item.imageUrl}" alt="${item.title}" 
-                                 class="w-full h-full object-cover max-h-full">
+                                 class="w-full h-full object-cover">
                         </div>
                     ` : ''}
                     <div class="p-6">
@@ -258,4 +258,5 @@ document.addEventListener('DOMContentLoaded', function () {
 </body>
 
 </html>
+
 
