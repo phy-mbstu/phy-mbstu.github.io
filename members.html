@@ -650,11 +650,11 @@
                             (member.batch ? `<p class="text-xs text-gray-500"><i class="fas fa-graduation-cap mr-1 text-gray-500"></i>Batch: ${member.batch}</p>` : '');
                         
                         const membershipInfo = getMembershipTypeFull(member.membershipType);
-                        const membershipTypeHTML = member.membershipType ? 
-                            `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium membership-badge">
-                                <i class="fas ${membershipInfo.icon} mr-1"></i>
-                                ${membershipInfo.text}
-                            </span>` : '';
+						const membershipTypeHTML = member.membershipType ? 
+						    `<div class="flex items-center"><span class="inline-flex items-center px-2 py-1 rounded-full text-xs membership-badge">
+						        <i class="fas ${membershipInfo.icon} mr-1"></i>
+						        ${membershipInfo.text}
+						    </span></div>` : '';
 
                         // Payment status based on paymentStatus field
                         const paymentStatus = getPaymentStatus(member.paymentStatus);
@@ -758,9 +758,11 @@
 								             onerror="this.src='${generateInitialsPlaceholder(member.name)}'">
 								    </div>
 								    <div class="flex-1 min-w-0">
-								        <h3 class="text-base sm:text-lg font-bold text-gray-800 truncate">${member.name}</h3>
-								        ${batchInfoHTML}
-								        <div class="mt-1">${membershipTypeHTML}</div>
+								        <h3 class="text-base sm:text-lg font-bold text-gray-800 truncate mb-2">${member.name}</h3>
+								        <div class="space-y-1">
+								            ${batchInfoHTML}
+								            ${membershipTypeHTML}
+								        </div>
 								    </div>
 								</div>
                                 
@@ -925,6 +927,7 @@
 </body>
 
 </html>
+
 
 
 
