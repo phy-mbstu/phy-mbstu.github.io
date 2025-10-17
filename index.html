@@ -548,40 +548,56 @@
             });
     }
 
-    function fetchAlumniStats() {
-        return new Promise((resolve, reject) => {
-            const oldScript = document.getElementById('stats-jsonp-script');
-            if (oldScript) oldScript.remove();
-            
-            window.handleAlumniStats = function(data) {
-                if (data.error) {
-                    reject(new Error(data.error));
-                    return;
-                }
-                
-                const approvedMembers = data.approved || [];
-                const registeredAlumni = approvedMembers.length;
-                const workingProfessionals = approvedMembers.filter(member => 
-                    member.profession && member.profession !== 'Student'
-                ).length;
-                const abroadMembers = approvedMembers.filter(member => 
-                    member.workCountry && member.workCountry.toLowerCase() !== 'bangladesh'
-                ).length;
-                
-                resolve({
-                    registeredAlumni,
-                    workingProfessionals,
-                    abroadMembers
-                });
-            };
-            
-            const script = document.createElement('script');
-            script.id = 'stats-jsonp-script';
-            script.src = SCRIPT_URL + '?callback=handleAlumniStats';
-            script.onerror = () => reject(new Error('Failed to load stats from server'));
-            document.head.appendChild(script);
-        });
-    }
+	function fetchAlumniStats() {
+	    return new Promise((resolve, reject) => {
+	        const oldScript = document.getElementById('stats-jsonp-script');
+	        if (oldScript) oldScript.remove();
+	        
+	        window.handleAlumniStats = function(data) {
+	            if (data.error) {
+	                reject(new Error(data.error));
+	                return;
+	            }
+	            
+	            const approvedMembers = data.approved || [];
+	            const registeredAlumni = approvedMembers.length;
+	            
+	            // Debug: Check what roles we have
+	            const roles = approvedMembers.map(m => m.role).filter(r => r);
+	            console.log('Found roles:', roles);
+	            
+	            // SIMPLE: Has paid job if role field is not empty
+	            const workingProfessionals = approvedMembers.filter(member => {
+	                const role = (member.role || '').trim();
+	                return role !== ''; // Not empty = has paid job
+	            }).length;
+	            
+	            console.log(`Working professionals: ${workingProfessionals} out of ${registeredAlumni}`);
+	            
+	            // Better abroad members detection
+	            const abroadMembers = approvedMembers.filter(member => {
+	                const country = (member.workCountry || '').toLowerCase().trim();
+	                return country && 
+	                       country !== 'bangladesh' && 
+	                       country !== 'bd' && 
+	                       country !== '' && 
+	                       country !== 'n/a';
+	            }).length;
+	            
+	            resolve({
+	                registeredAlumni,
+	                workingProfessionals,
+	                abroadMembers
+	            });
+	        };
+	        
+	        const script = document.createElement('script');
+	        script.id = 'stats-jsonp-script';
+	        script.src = SCRIPT_URL + '?callback=handleAlumniStats';
+	        script.onerror = () => reject(new Error('Failed to load stats from server'));
+	        document.head.appendChild(script);
+	    });
+	}
 
     // --- MAP FUNCTIONS ---
     function initMap() {
@@ -917,5 +933,6 @@
 </body>
 
 </html>
+
 
 
