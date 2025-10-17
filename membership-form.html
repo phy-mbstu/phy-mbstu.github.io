@@ -1,160 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MBSTU Physics Alumni Association</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-    body { font-family: 'Inter', sans-serif; }
-    .nav-container {
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-    }
-    .nav-container::-webkit-scrollbar { display: none; }
-    
-    /* Map styles */
-    #alumni-map {
-        border-radius: 0.5rem;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Custom marker styles */
-    .custom-marker {
-        background: white;
-        border: 3px solid;
-        border-radius: 50%;
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        overflow: hidden;
-    }
-    
-    .marker-blue { border-color: #3b82f6; }
-    
-    /* Loading spinner */
-    .loading-spinner {
-        border: 4px solid #f3f4f6;
-        border-top: 4px solid #7c3aed;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 1s linear infinite;
-        margin: 20px auto;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    
-    /* Professional gradient backgrounds for cards */
-    .card-gradient-1 { background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); }
-    .card-gradient-2 { background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%); }
-    .card-gradient-3 { background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); }
-    .card-gradient-4 { background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%); }
-    .card-gradient-5 { background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%); }
-    .card-gradient-6 { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); }
-    
-    /* Gradient buttons */
-    .gradient-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        transition: all 0.3s ease;
-    }
-    .gradient-btn:hover {
-        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-    
-    .gradient-btn-blue {
-        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        color: white;
-        transition: all 0.3s ease;
-    }
-    .gradient-btn-blue:hover {
-        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-    
-    .gradient-btn-orange {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        color: white;
-        transition: all 0.3s ease;
-    }
-    .gradient-btn-orange:hover {
-        background: linear-gradient(135deg, #eab308 0%, #b45309 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-    
-    .gradient-btn-green {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: white;
-        transition: all 0.3s ease;
-    }
-    .gradient-btn-green:hover {
-        background: linear-gradient(135deg, #0d9669 0%, #047857 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBSTU Physics Alumni - Membership Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .success-modal { transition: opacity 0.3s ease-in-out; }
+        .step-indicator { transition: all 0.3s ease; }
+    </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-50 text-gray-800">
 
-<!-- Header and Navigation -->
-<div class="bg-white shadow-md">
-    <div class="header text-center py-4 bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 text-white">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center sm:justify-between">
-            <!-- Logo and Title Container -->
-            <div class="flex items-center space-x-4 mb-4 sm:mb-0">
-                <!-- Logo Container - Increased size -->
-                <div class="logo-container w-24 h-24 bg-white rounded-full p-1 shadow-lg flex items-center justify-center">
-                    <img src="assets/logo.png" alt="MBSTU Physics Alumni Association Logo" 
-                         class="w-full h-full object-contain"
-                         onerror="this.style.display='none'; document.querySelector('.logo-placeholder').style.display='flex';">
-                    <!-- Fallback placeholder if logo doesn't load -->
-                    <div class="logo-placeholder w-full h-full bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg hidden">
-                        MPAA
-                    </div>
-                </div>
-                
-                <!-- Title Container -->
-                <div class="text-left">
-                    <div class="main-title text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight">
-                        MBSTU PHYSICS ALUMNI ASSOCIATION
-                    </div>
-                    <div class="university-name text-sm sm:text-base lg:text-lg font-semibold mt-1 opacity-90">
-                        MAWLANA BHASHANI SCIENCE AND TECHNOLOGY UNIVERSITY
-                    </div>
-                </div>
+    <!-- Header and Navigation -->
+    <div class="bg-white shadow-md">
+        <div class="header text-center py-6 bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 text-white">
+            <div class="main-title text-4xl sm:text-5xl font-extrabold tracking-tight">MBSTU PHYSICS ALUMNI ASSOCIATION</div>
+            <div class="university-name text-lg sm:text-xl font-semibold mt-1">MAWLANA BHASHANI SCIENCE AND TECHNOLOGY UNIVERSITY</div>
+        </div>
+        <nav class="nav bg-white shadow-sm">
+            <div class="nav-container max-w-7xl mx-auto flex justify-center items-center space-x-2 sm:space-x-4 p-4 overflow-x-auto whitespace-nowrap">
+                <a href="index.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Home</a>
+				<a href="membership-form.html" class="nav-tab text-purple-600 font-bold border-b-2 border-purple-600 px-3 py-2 rounded-md text-sm sm:text-base">Become a Member</a>
+                <a href="members.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Current Members</a>
+                <a href="committee.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Committee</a>
+                <a href="alumni-news.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Alumni News</a>
+                <a href="activities.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Activities</a>
+                <a href="upcoming-events.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Upcoming Events</a>
+                <a href="admin.html" class="nav-tab admin-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base">Admin</a>
             </div>
-        </div>
+        </nav>
     </div>
-    <nav class="nav bg-white shadow-sm sticky top-0 z-50">
-        <div class="nav-container max-w-7xl mx-auto flex justify-start items-center space-x-2 sm:space-x-4 p-4 overflow-x-auto whitespace-nowrap">
-            <a href="index.html" class="nav-tab text-purple-600 font-bold border-b-2 border-purple-600 px-3 py-2 rounded-md text-sm sm:text-base">Home</a>
-            <a href="membership-form.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Become a Member</a>
-            <a href="members.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Current Members</a>
-            <a href="committee.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Committee</a>
-            <a href="alumni-news.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Alumni News</a>
-            <a href="activities.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Activities</a>
-            <a href="upcoming-events.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Upcoming Events</a>
-            <a href="admin.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Admin</a>
-        </div>
-    </nav>
-</div>
 
-<!-- Main Content Area -->
-<div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
     <!-- Membership Form -->
     <div id="form-container" class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
         <div class="bg-white shadow-xl rounded-2xl p-8 md:p-12">
@@ -201,7 +80,7 @@
                             </div>
                             <div>
                                 <label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth <span class="text-red-500">*</span></label>
-                                <input type="date" id="dob" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
+                                <input type="text" id="dob" placeholder="DD/MM/YYYY" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
                             </div>
                             <div>
                                 <label for="fatherName" class="block text-sm font-medium text-gray-700">Father's Name <span class="text-red-500">*</span></label>
@@ -223,8 +102,8 @@
                             <div>
                                 <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number <span class="text-red-500">*</span></label>
                                 <div class="mt-1 flex rounded-md shadow-sm">
-                                    <input type="text" id="countryCode" value="+880" class="w-20 block px-3 py-2 border border-r-0 border-gray-300 bg-gray-50 rounded-l-md focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
-                                    <input type="tel" id="phone" placeholder="1712345678" class="flex-1 min-w-0 block w-full px-3 py-2 border border-gray-300 rounded-r-md focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
+                                    <input type="text" id="countryCode" placeholder="+81" class="w-20 block px-3 py-2 border border-r-0 border-gray-300 bg-gray-50 rounded-l-md focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
+                                    <input type="tel" id="phone" placeholder="01712345678" class="flex-1 min-w-0 block w-full px-3 py-2 border border-gray-300 rounded-r-md focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
                                 </div>
                             </div>
                              <div>
@@ -265,22 +144,22 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="season" class="block text-sm font-medium text-gray-700">Season <span class="text-red-500">*</span></label>
-                                <input type="text" id="season" placeholder="Example: 2010-2011" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
+                                <input type="text" id="season" placeholder="2010-2011" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
                             </div>
                             <div>
                                 <label for="batch" class="block text-sm font-medium text-gray-700">Batch <span class="text-red-500">*</span></label>
-                                <input type="number" id="batch" placeholder="Example: 11" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
+                                <input type="text" id="batch" placeholder="01" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
                             </div>
                             <div>
                                 <label for="studentId" class="block text-sm font-medium text-gray-700">Student ID <span class="text-red-500">*</span></label>
                                 <div class="mt-1 flex rounded-md shadow-sm border border-gray-300 focus-within:border-purple-500 focus-within:ring-1 focus-within:ring-purple-500">
                                     <span class="inline-flex items-center px-3 text-gray-500 sm:text-sm bg-gray-50 rounded-l-md border-r border-gray-300">PH</span>
-                                    <input type="number" id="studentId" placeholder="11001" class="flex-1 min-w-0 block w-full px-3 py-2 border-0 rounded-r-md focus:ring-0 focus:border-0" required>
+                                    <input type="text" id="studentId" placeholder="11001" class="flex-1 min-w-0 block w-full px-3 py-2 border-0 rounded-r-md focus:ring-0 focus:border-0" required>
                                 </div>
                             </div>
                              <div>
                                 <label for="passingYear" class="block text-sm font-medium text-gray-700">Passing Year <span class="text-red-500">*</span></label>
-                                <input type="number" id="passingYear" placeholder="Example: 2016" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
+                                <input type="text" id="passingYear" placeholder="2016" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
                             </div>
                             <div class="md:col-span-2">
                                 <label for="degree" class="block text-sm font-medium text-gray-700">Degree Obtained <span class="text-red-500">*</span></label>
@@ -306,17 +185,17 @@
                         
                         <div class="flex items-center mb-6">
                             <input type="checkbox" id="jobPreparation" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
-                            <label for="jobPreparation" class="ml-2 block text-sm text-gray-900">Under Job Preparation</label>
+                            <label for="jobPreparation" class="ml-2 block text-sm text-gray-900">In Preparation for Job</label>
                         </div>
                         
                         <div id="professional-fields" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="sector" class="block text-sm font-medium text-gray-700">Sector <span id="sector-req" class="text-red-500 hidden">*</span></label>
-                                <input type="text" id="sector" placeholder="e.g., Teaching, HigherEdu" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                                <input type="text" id="sector" placeholder="Teaching, HigherEdu" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
                             </div>
                             <div>
                                 <label for="role" class="block text-sm font-medium text-gray-700">Role <span id="role-req" class="text-red-500 hidden">*</span></label>
-                                <input type="text" id="role" placeholder="e.g., Lecturer, PhD Student" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                                <input type="text" id="role" placeholder="Lecturer, PhD Student" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
                             </div>
                             <div>
                                 <label for="company" class="block text-sm font-medium text-gray-700">Company / Organization <span id="company-req" class="text-red-500 hidden">*</span></label>
@@ -333,7 +212,7 @@
                              <div>
                                 <label for="lastDegree" class="block text-sm font-medium text-gray-700">Last Degree (Optional)</label>
                                 <select id="lastDegree" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
-                                    <option value="" selected>None</option>
+									<option value="" selected>None</option>
                                     <option value="MSc">MSc</option>
                                     <option value="MPhil">MPhil</option>
                                     <option value="PhD">PhD</option>
@@ -450,14 +329,14 @@
         </div>
     </div>
 
-	<!-- Footer -->
-	<footer class="bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 text-white text-center p-6 mt-8">
-		<p class="font-semibold">&copy; 2024 MBSTU PHYSICS ALUMNI ASSOCIATION. All Rights Reserved.</p>
-	</footer>
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 text-white text-center p-6 mt-16">
+        <p class="font-semibold">&copy; 2024 MBSTU Physics Alumni Association. All Rights Reserved.</p>
+    </footer>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbymZ7kLWVXMxBQ2bA5HKI9wRNvIlc-cTOmTnOXzqoBPHMcKGhoQDocAzE5cXRs3YAiE/exec';
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwyrThNDw87LIPcvJFrqLN6gSJ2TSKHJ8YqPvrFX6lxBNHqfr_fS-SnNh9cvZd901Fd/exec';
 
     const form = document.getElementById('membership-form');
     const formContainer = document.getElementById('form-container');
@@ -730,6 +609,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 
