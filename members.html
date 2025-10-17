@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBSTU Physics Alumni Association</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .nav-container {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .nav-container::-webkit-scrollbar { display: none; }
+    
+    /* Map styles */
+    #alumni-map {
+        border-radius: 0.5rem;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Custom marker styles */
+    .custom-marker {
+        background: white;
+        border: 3px solid;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        overflow: hidden;
+    }
+    
+    .marker-blue { border-color: #3b82f6; }
+    
+    /* Loading spinner */
+    .loading-spinner {
+        border: 4px solid #f3f4f6;
+        border-top: 4px solid #7c3aed;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Professional gradient backgrounds for cards */
+    .card-gradient-1 { background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); }
+    .card-gradient-2 { background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%); }
+    .card-gradient-3 { background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); }
+    .card-gradient-4 { background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%); }
+    .card-gradient-5 { background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%); }
+    .card-gradient-6 { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); }
+    
+    /* Gradient buttons */
+    .gradient-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .gradient-btn:hover {
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .gradient-btn-blue {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .gradient-btn-blue:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .gradient-btn-orange {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .gradient-btn-orange:hover {
+        background: linear-gradient(135deg, #eab308 0%, #b45309 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .gradient-btn-green {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .gradient-btn-green:hover {
+        background: linear-gradient(135deg, #0d9669 0%, #047857 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+</style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+<!-- Header and Navigation -->
+<div class="bg-white shadow-md">
+    <div class="header text-center py-4 bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center sm:justify-between">
+            <!-- Logo and Title Container -->
+            <div class="flex items-center space-x-4 mb-4 sm:mb-0">
+                <!-- Logo Container - Increased size -->
+                <div class="logo-container w-24 h-24 bg-white rounded-full p-1 shadow-lg flex items-center justify-center">
+                    <img src="assets/Logo/Logo/logo_v1.png" alt="MBSTU Physics Alumni Association Logo" 
+                         class="w-full h-full object-contain"
+                         onerror="this.style.display='none'; document.querySelector('.logo-placeholder').style.display='flex';">
+                    <!-- Fallback placeholder if logo doesn't load -->
+                    <div class="logo-placeholder w-full h-full bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg hidden">
+                        MPAA
+                    </div>
+                </div>
+                
+                <!-- Title Container -->
+                <div class="text-left">
+                    <div class="main-title text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight">
+                        MBSTU PHYSICS ALUMNI ASSOCIATION
+                    </div>
+                    <div class="university-name text-sm sm:text-base lg:text-lg font-semibold mt-1 opacity-90">
+                        MAWLANA BHASHANI SCIENCE AND TECHNOLOGY UNIVERSITY
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="nav bg-white shadow-sm sticky top-0 z-50">
+        <div class="nav-container max-w-7xl mx-auto flex justify-start items-center space-x-2 sm:space-x-4 p-4 overflow-x-auto whitespace-nowrap">
+            <a href="index.html" class="nav-tab text-purple-600 font-bold border-b-2 border-purple-600 px-3 py-2 rounded-md text-sm sm:text-base">Home</a>
+            <a href="membership-form.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Become a Member</a>
+            <a href="members.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Current Members</a>
+            <a href="committee.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Committee</a>
+            <a href="alumni-news.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Alumni News</a>
+            <a href="activities.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Activities</a>
+            <a href="upcoming-events.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Upcoming Events</a>
+            <a href="admin.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Admin</a>
+        </div>
+    </nav>
+</div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+        
+        <!-- Status Message -->
+        <div id="status-message" class="hidden p-4 rounded-lg text-center"></div>
+        
+        <!-- Top Search Bar with Pagination -->
+        <div class="bg-white shadow-lg rounded-lg p-4 sm:p-6">
+            <div class="grid grid-cols-1 xl:grid-cols-7 gap-4 items-end">
+                <div class="xl:col-span-1">
+                    <label for="batch-filter" class="block text-sm font-medium text-gray-700 mb-1">Batch</label>
+                    <select id="batch-filter" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <option value="all">All Batches</option>
+                    </select>
+                </div>
+                <div class="xl:col-span-1">
+                    <label for="membership-filter" class="block text-sm font-medium text-gray-700 mb-1">Membership Type</label>
+                    <select id="membership-filter" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <option value="all">All Types</option>
+                        <option value="General">General</option>
+                        <option value="Permanent">Permanent</option>
+                        <option value="Donor">Donor</option>
+                    </select>
+                </div>
+                <div class="xl:col-span-1">
+                    <label for="id-search" class="block text-sm font-medium text-gray-700 mb-1">Search Name/ID</label>
+                    <input type="text" id="id-search" placeholder="e.g., PH11001 or John" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                </div>
+                <div class="xl:col-span-1">
+                    <label for="per-page" class="block text-sm font-medium text-gray-700 mb-1">Display</label>
+                    <select id="per-page" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <option value="15">15 per page</option>
+                        <option value="30">30 per page</option>
+                        <option value="45">45 per page</option>
+                        <option value="all">All members</option>
+                    </select>
+                </div>
+                <div class="xl:col-span-1">
+                    <button id="reset-filters" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center justify-center gap-2 text-sm border border-gray-300">
+                        <i class="fas fa-undo"></i>
+                        Reset Filters
+                    </button>
+                </div>
+                <div class="xl:col-span-2">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-gray-600">
+                            Showing <span id="showing-count">0</span> of <span id="total-count">0</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button id="prev-page" class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center gap-2 text-sm border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <i class="fas fa-chevron-left"></i>
+                                Prev
+                            </button>
+                            <button id="next-page" class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center gap-2 text-sm border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                                Next
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="hidden text-center py-8">
+            <div class="loading-spinner"></div>
+            <p class="text-gray-600 mt-4 text-sm">Loading Members...</p>
+        </div>
+
+        <!-- Members Grid -->
+        <div id="members-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            <!-- Member cards will be dynamically inserted here -->
+        </div>
+
+        <!-- Bottom Search Bar with Pagination -->
+        <div class="bg-white shadow-lg rounded-lg p-4 sm:p-6">
+            <div class="grid grid-cols-1 xl:grid-cols-7 gap-4 items-end">
+                <div class="xl:col-span-1">
+                    <label for="batch-filter-bottom" class="block text-sm font-medium text-gray-700 mb-1">Batch</label>
+                    <select id="batch-filter-bottom" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <option value="all">All Batches</option>
+                    </select>
+                </div>
+                <div class="xl:col-span-1">
+                    <label for="membership-filter-bottom" class="block text-sm font-medium text-gray-700 mb-1">Membership Type</label>
+                    <select id="membership-filter-bottom" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <option value="all">All Types</option>
+                        <option value="General">General</option>
+                        <option value="Permanent">Permanent</option>
+                        <option value="Donor">Donor</option>
+                    </select>
+                </div>
+                <div class="xl:col-span-1">
+                    <label for="id-search-bottom" class="block text-sm font-medium text-gray-700 mb-1">Search Name/ID</label>
+                    <input type="text" id="id-search-bottom" placeholder="e.g., PH11001 or John" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                </div>
+                <div class="xl:col-span-1">
+                    <label for="per-page-bottom" class="block text-sm font-medium text-gray-700 mb-1">Display</label>
+                    <select id="per-page-bottom" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <option value="15">15 per page</option>
+                        <option value="30">30 per page</option>
+                        <option value="45">45 per page</option>
+                        <option value="all">All members</option>
+                    </select>
+                </div>
+                <div class="xl:col-span-1">
+                    <button id="reset-filters-bottom" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center justify-center gap-2 text-sm border border-gray-300">
+                        <i class="fas fa-undo"></i>
+                        Reset Filters
+                    </button>
+                </div>
+                <div class="xl:col-span-2">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-gray-600">
+                            Showing <span id="showing-count-bottom">0</span> of <span id="total-count-bottom">0</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button id="prev-page-bottom" class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center gap-2 text-sm border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <i class="fas fa-chevron-left"></i>
+                                Prev
+                            </button>
+                            <button id="next-page-bottom" class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center gap-2 text-sm border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                                Next
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Members Message -->
+        <div id="no-members-message" class="hidden text-center py-12 bg-white rounded-lg shadow-lg">
+            <div class="text-gray-400 text-5xl mb-4">
+                <i class="fas fa-users-slash"></i>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-gray-600 mb-2">No Members Found</h3>
+            <p class="text-gray-500 text-sm sm:text-base mb-6 px-4">No members found matching your criteria. Try adjusting your filters.</p>
+            <button id="reset-filters-2" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                Reset Filters
+            </button>
+        </div>
+    </div>
+
+	<!-- Footer -->
+	<footer class="bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 text-white text-center p-6 mt-8">
+		<p class="font-semibold">&copy; 2024 MBSTU PHYSICS ALUMNI ASSOCIATION. All Rights Reserved.</p>
+	</footer>
+
+    <script>
+        // Your Google Apps Script URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwp_sGD3hxl3R6EwZEqzaUGbr8ovV286a3y8TiYbH8PmLW4oazW191NG-pjdFfH2mle/exec';
+
+        // Professional gradient classes for cards
+        const cardGradients = [
+            'card-gradient-1', 'card-gradient-2', 'card-gradient-3', 
+            'card-gradient-4', 'card-gradient-5', 'card-gradient-6'
+        ];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const membersGrid = document.getElementById('members-grid');
+            const noMembersMessage = document.getElementById('no-members-message');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const statusMessage = document.getElementById('status-message');
+
+            // Top search elements
+            const batchFilter = document.getElementById('batch-filter');
+            const membershipFilter = document.getElementById('membership-filter');
+            const idSearch = document.getElementById('id-search');
+            const perPageSelect = document.getElementById('per-page');
+            const resetBtn = document.getElementById('reset-filters');
+            const showingCount = document.getElementById('showing-count');
+            const totalCount = document.getElementById('total-count');
+            const prevPageBtn = document.getElementById('prev-page');
+            const nextPageBtn = document.getElementById('next-page');
+
+            // Bottom search elements
+            const batchFilterBottom = document.getElementById('batch-filter-bottom');
+            const membershipFilterBottom = document.getElementById('membership-filter-bottom');
+            const idSearchBottom = document.getElementById('id-search-bottom');
+            const perPageSelectBottom = document.getElementById('per-page-bottom');
+            const resetBtnBottom = document.getElementById('reset-filters-bottom');
+            const showingCountBottom = document.getElementById('showing-count-bottom');
+            const totalCountBottom = document.getElementById('total-count-bottom');
+            const prevPageBtnBottom = document.getElementById('prev-page-bottom');
+            const nextPageBtnBottom = document.getElementById('next-page-bottom');
+            const resetBtn2 = document.getElementById('reset-filters-2');
+
+            let currentPage = 1;
+            let itemsPerPage = 15;
+            let allMembers = [];
+            let filteredMembers = [];
+
+            // Show/hide loading spinner
+            function setLoading(loading) {
+                if (loading) {
+                    loadingSpinner.classList.remove('hidden');
+                    membersGrid.classList.add('hidden');
+                    noMembersMessage.classList.add('hidden');
+                } else {
+                    loadingSpinner.classList.add('hidden');
+                    membersGrid.classList.remove('hidden');
+                }
+            }
+
+            // Show status message
+            function showStatus(message, type = 'info') {
+                const types = {
+                    'info': 'bg-blue-50 text-blue-700 border border-blue-200',
+                    'success': 'bg-green-50 text-green-700 border border-green-200',
+                    'error': 'bg-red-50 text-red-700 border border-red-200',
+                    'warning': 'bg-yellow-50 text-yellow-700 border border-yellow-200'
+                };
+                
+                statusMessage.className = `p-4 rounded-lg text-center text-sm ${types[type]}`;
+                statusMessage.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} mr-2"></i> ${message}`;
+                statusMessage.classList.remove('hidden');
+                
+                if (type === 'success') {
+                    setTimeout(() => {
+                        statusMessage.classList.add('hidden');
+                    }, 5000);
+                }
+            }
+
+            // Show email popup
+            function showEmailPopup(email) {
+                const popup = document.createElement('div');
+                popup.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                popup.innerHTML = `
+                    <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Email Address</h3>
+                            <button onclick="this.parentElement.parentElement.parentElement.remove()" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <p class="text-gray-600 mb-4 break-all">${email}</p>
+                        <div class="flex justify-end space-x-2">
+                            <button onclick="this.parentElement.parentElement.parentElement.remove()" class="px-4 py-2 text-gray-600 hover:text-gray-800">Close</button>
+                            <a href="mailto:${email}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Send Email</a>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(popup);
+            }
+
+            // Sync search elements
+            function syncSearchElements() {
+                batchFilterBottom.value = batchFilter.value;
+                membershipFilterBottom.value = membershipFilter.value;
+                idSearchBottom.value = idSearch.value;
+                perPageSelectBottom.value = perPageSelect.value;
+            }
+
+            // Sync pagination info
+            function syncPaginationInfo() {
+                showingCountBottom.textContent = showingCount.textContent;
+                totalCountBottom.textContent = totalCount.textContent;
+            }
+
+            // Fetch approved members from Google Sheets using JSONP
+            function fetchApprovedMembers() {
+                return new Promise((resolve, reject) => {
+                    const oldScript = document.getElementById('jsonp-script');
+                    if (oldScript) oldScript.remove();
+                    
+                    window.handleMembersData = function(data) {
+                        if (data.error) {
+                            reject(new Error(data.error));
+                            return;
+                        }
+                        console.log('Data received:', data);
+                        resolve(data.approved || []);
+                    };
+                    
+                    const script = document.createElement('script');
+                    script.id = 'jsonp-script';
+                    script.src = SCRIPT_URL + '?callback=handleMembersData';
+                    script.onerror = () => reject(new Error('Failed to load data from server'));
+                    document.head.appendChild(script);
+                });
+            }
+
+            // Photo URL function
+            function getProfilePhotoUrl(photoUrl, memberName) {
+                if (!photoUrl || photoUrl.trim() === '' || ['No Photo', 'N/A', 'None', 'data:'].includes(photoUrl) || photoUrl.includes('data:')) {
+                    return generateInitialsPlaceholder(memberName);
+                }
+                
+                photoUrl = photoUrl.trim();
+                
+                if (photoUrl.includes('drive.google.com')) {
+                    return convertToThumbnailUrl(photoUrl);
+                }
+                
+                if (isDirectImageUrl(photoUrl)) {
+                    return photoUrl;
+                }
+                
+                return generateInitialsPlaceholder(memberName);
+            }
+
+            function convertToThumbnailUrl(url) {
+                const fileId = extractFileId(url);
+                if (fileId) {
+                    return `https://drive.google.com/thumbnail?id=${fileId}&sz=1000`;
+                }
+                return url;
+            }
+
+            function extractFileId(url) {
+                const patterns = [
+                    /\/d\/([^\/]+)/,
+                    /id=([^&]+)/,
+                    /\/file\/d\/([^\/]+)/,
+                    /\/open\?id=([^&]+)/,
+                    /thumbnail\?id=([^&]+)/
+                ];
+                
+                for (const pattern of patterns) {
+                    const match = url.match(pattern);
+                    if (match && match[1]) {
+                        return match[1];
+                    }
+                }
+                
+                return url.length === 33 && !url.includes('/') && !url.includes('.') ? url : null;
+            }
+
+            function isDirectImageUrl(url) {
+                return url.match(/\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i) || 
+                       url.startsWith('data:image/') ||
+                       url.includes('images.unsplash.com') ||
+                       url.includes('placehold.co');
+            }
+
+            function generateInitialsPlaceholder(name) {
+                const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                return `data:image/svg+xml;base64,${btoa(`
+                    <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#grad)"/>
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" 
+                              font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+                              fill="white">${initials}</text>
+                    </svg>
+                `)}`;
+            }
+
+            function populateBatchFilter(members) {
+                const batches = [...new Set(members.map(m => m.batch).filter(Boolean))];
+                batches.sort((a, b) => a - b);
+                
+                // Clear both batch filters
+                while (batchFilter.options.length > 1) {
+                    batchFilter.remove(1);
+                }
+                while (batchFilterBottom.options.length > 1) {
+                    batchFilterBottom.remove(1);
+                }
+
+                batches.forEach(batch => {
+                    const option = document.createElement('option');
+                    option.value = batch;
+                    option.textContent = `Batch ${batch}`;
+                    batchFilter.appendChild(option);
+                    
+                    const optionBottom = document.createElement('option');
+                    optionBottom.value = batch;
+                    optionBottom.textContent = `Batch ${batch}`;
+                    batchFilterBottom.appendChild(optionBottom);
+                });
+            }
+
+            function getMembershipTypeFull(membershipType) {
+                const types = {
+                    'General': { text: 'General Member', icon: 'fa-user' },
+                    'Permanent': { text: 'Permanent Member', icon: 'fa-crown' },
+                    'Donor': { text: 'Donor Member', icon: 'fa-hand-holding-heart' }
+                };
+                return types[membershipType] || { text: membershipType, icon: 'fa-user' };
+            }
+
+            function getPaymentStatus(paymentStatus) {
+                if (paymentStatus === 'Paid') {
+                    return {
+                        class: 'status-badge status-active',
+                        text: 'Active Member',
+                        icon: 'fa-check-circle'
+                    };
+                } else {
+                    return {
+                        class: 'status-badge status-pending',
+                        text: 'Payment Pending',
+                        icon: 'fa-clock'
+                    };
+                }
+            }
+
+            function applyFilters() {
+                const selectedBatch = batchFilter.value;
+                const selectedMembership = membershipFilter.value;
+                const searchQuery = idSearch.value.trim().toLowerCase();
+
+                filteredMembers = [...allMembers];
+                
+                if (selectedBatch !== 'all') {
+                    filteredMembers = filteredMembers.filter(member => member.batch == selectedBatch);
+                }
+
+                if (selectedMembership !== 'all') {
+                    filteredMembers = filteredMembers.filter(member => member.membershipType === selectedMembership);
+                }
+
+                if (searchQuery) {
+                    filteredMembers = filteredMembers.filter(member => 
+                        (member.studentId && member.studentId.toLowerCase().includes(searchQuery)) ||
+                        (member.name && member.name.toLowerCase().includes(searchQuery))
+                    );
+                }
+
+                return filteredMembers;
+            }
+
+            function renderMembers() {
+                filteredMembers = applyFilters();
+                
+                // Update pagination info
+                totalCount.textContent = filteredMembers.length;
+                totalCountBottom.textContent = filteredMembers.length;
+                
+                // Apply pagination
+                let displayMembers = filteredMembers;
+                if (itemsPerPage !== 'all') {
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const endIndex = startIndex + itemsPerPage;
+                    displayMembers = filteredMembers.slice(startIndex, endIndex);
+                    showingCount.textContent = `${Math.min(startIndex + 1, filteredMembers.length)}-${Math.min(endIndex, filteredMembers.length)}`;
+                    showingCountBottom.textContent = `${Math.min(startIndex + 1, filteredMembers.length)}-${Math.min(endIndex, filteredMembers.length)}`;
+                    
+                    // Enable/disable pagination buttons
+                    const prevDisabled = currentPage === 1;
+                    const nextDisabled = endIndex >= filteredMembers.length;
+                    
+                    prevPageBtn.disabled = prevDisabled;
+                    nextPageBtn.disabled = nextDisabled;
+                    prevPageBtnBottom.disabled = prevDisabled;
+                    nextPageBtnBottom.disabled = nextDisabled;
+                } else {
+                    showingCount.textContent = filteredMembers.length;
+                    showingCountBottom.textContent = filteredMembers.length;
+                    
+                    // Disable pagination buttons when showing all
+                    prevPageBtn.disabled = true;
+                    nextPageBtn.disabled = true;
+                    prevPageBtnBottom.disabled = true;
+                    nextPageBtnBottom.disabled = true;
+                }
+
+                membersGrid.innerHTML = '';
+
+                if (displayMembers.length === 0) {
+                    noMembersMessage.classList.remove('hidden');
+                    membersGrid.classList.add('hidden');
+                } else {
+                    noMembersMessage.classList.add('hidden');
+                    membersGrid.classList.remove('hidden');
+                    
+                    displayMembers.forEach((member, index) => {
+                        const cardGradient = cardGradients[index % cardGradients.length];
+                        
+                        let locationText = 'Location not available';
+                        let locationQuery = '';
+                        if (member.workCity && member.workCountry) {
+                            locationText = `${member.workCity}, ${member.workCountry}`;
+                            locationQuery = `${member.workCity}, ${member.workCountry}`;
+                        } else if (member.subDistrict && member.district) {
+                            locationText = `${member.subDistrict}, ${member.district}`;
+                            locationQuery = `${member.subDistrict}, ${member.district}`;
+                        } else if (member.district) {
+                            locationText = `${member.district}`;
+                            locationQuery = `${member.district}`;
+                        }
+
+                        const googleMapsLink = locationQuery ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationQuery)}` : '#';
+
+                        const batchInfoHTML = (member.batch && member.session) ? 
+                            `<p class="text-xs text-gray-500"><i class="fas fa-graduation-cap mr-1 text-gray-500"></i>Batch: ${member.batch}, Session: ${member.session}</p>` : 
+                            (member.batch ? `<p class="text-xs text-gray-500"><i class="fas fa-graduation-cap mr-1 text-gray-500"></i>Batch: ${member.batch}</p>` : '');
+                        
+                        const membershipInfo = getMembershipTypeFull(member.membershipType);
+                        const membershipTypeHTML = member.membershipType ? 
+                            `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium membership-badge">
+                                <i class="fas ${membershipInfo.icon} mr-1"></i>
+                                ${membershipInfo.text}
+                            </span>` : '';
+
+                        // Payment status based on paymentStatus field
+                        const paymentStatus = getPaymentStatus(member.paymentStatus);
+
+                        // Education Section
+                        const mbstuDegree = member.degree || 'B.Sc. in Physics';
+                        const lastDegree = member.lastDegree;
+                        const university = member.university;
+                        
+                        const educationHTML = `
+                            <div class="space-y-1 text-sm">
+                                <div class="text-gray-700">
+                                    <i class="fas fa-graduation-cap mr-1 text-gray-500"></i>
+                                    ${mbstuDegree}, MBSTU
+                                </div>
+                                ${lastDegree && university ? `
+                                <div class="text-gray-600">
+                                    <i class="fas fa-user-graduate mr-1 text-gray-500"></i>
+                                    ${lastDegree}, ${university}
+                                </div>
+                                ` : ''}
+                            </div>
+                        `;
+
+                        // Role & Company in 2 columns
+                        const roleCompanyHTML = (member.role || member.company) ? `
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                ${member.role ? `
+                                <div class="text-gray-700">
+                                    <i class="fas fa-briefcase mr-1 text-gray-500"></i>
+                                    ${member.role}
+                                </div>
+                                ` : '<div></div>'}
+                                ${member.company ? `
+                                <div class="text-gray-600">
+                                    <i class="fas fa-building mr-1 text-gray-500"></i>
+                                    ${member.company}
+                                </div>
+                                ` : '<div></div>'}
+                            </div>
+                        ` : '';
+
+                        // Email & LinkedIn in 2 columns
+                        const emailLinkedInHTML = (member.email && member.email !== 'No Email') || member.linkedin ? `
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                ${member.email && member.email !== 'No Email' ? `
+                                <div class="text-gray-700">
+                                    <i class="fas fa-envelope mr-1 text-gray-500"></i>
+                                    <button onclick="showEmailPopup('${member.email}')" class="hover:text-blue-600 underline">Send Email</button>
+                                </div>
+                                ` : '<div></div>'}
+                                ${member.linkedin ? `
+                                <div class="text-gray-600">
+                                    <i class="fab fa-linkedin mr-1 text-gray-500"></i>
+                                    <a href="${member.linkedin}" target="_blank" class="hover:text-blue-600">LinkedIn Profile</a>
+                                </div>
+                                ` : '<div></div>'}
+                            </div>
+                        ` : '';
+
+                        // Phone & Location in 2 columns
+                        const phoneLocationHTML = (member.phone && member.phone !== 'No Phone' && member.phone !== '8107066021508') || locationQuery ? `
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                ${member.phone && member.phone !== 'No Phone' && member.phone !== '8107066021508' ? `
+                                <div class="text-gray-700">
+                                    <i class="fas fa-phone mr-1 text-gray-500"></i>
+                                    ${member.phone}
+                                </div>
+                                ` : '<div></div>'}
+                                ${locationQuery ? `
+                                <div class="text-gray-600">
+                                    <i class="fas fa-map-marker-alt mr-1 text-gray-500"></i>
+                                    <a href="${googleMapsLink}" target="_blank" class="hover:text-red-600">${locationText}</a>
+                                </div>
+                                ` : '<div></div>'}
+                            </div>
+                        ` : '';
+
+                        const profilePhotoUrl = getProfilePhotoUrl(member.photoUrl, member.name);
+
+                        const memberCard = `
+                            <div class="member-card rounded-lg p-4 sm:p-5 flex flex-col h-full ${cardGradient}">
+                                <!-- Header Section -->
+                                <div class="flex items-start space-x-3 mb-3">
+                                    <img class="h-12 w-12 sm:h-14 sm:w-14 rounded-full profile-img shadow-md border-2 border-white" 
+                                         src="${profilePhotoUrl}" 
+                                         alt="Profile of ${member.name}"
+                                         loading="lazy"
+                                         onerror="this.src='${generateInitialsPlaceholder(member.name)}'">
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-base sm:text-lg font-bold text-gray-800 truncate">${member.name}</h3>
+                                        ${batchInfoHTML}
+                                        <div class="mt-1">${membershipTypeHTML}</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Education -->
+                                <div class="mb-3">
+                                    ${educationHTML}
+                                </div>
+                                
+                                <!-- Role & Company -->
+                                ${roleCompanyHTML}
+                                
+                                <!-- Email & LinkedIn -->
+                                ${emailLinkedInHTML}
+                                
+                                <!-- Phone & Location -->
+                                ${phoneLocationHTML}
+                                
+                                <!-- Status -->
+                                <div class="mt-auto pt-3 border-t border-gray-100">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${paymentStatus.class}">
+                                        <i class="fas ${paymentStatus.icon} mr-1"></i>
+                                        ${paymentStatus.text}
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+                        membersGrid.innerHTML += memberCard;
+                    });
+                }
+            }
+
+            async function initialize() {
+                try {
+                    setLoading(true);
+                    const approvedMembers = await fetchApprovedMembers();
+                    
+                    allMembers = approvedMembers;
+                    
+                    populateBatchFilter(approvedMembers);
+                    renderMembers();
+                    setLoading(false);
+                    
+                    if (approvedMembers.length > 0) {
+                        //showStatus(`Loaded ${approvedMembers.length} alumni members`, 'success');
+                    } else {
+                        showStatus('No approved members found. Members will appear here after admin approval.', 'info');
+                    }
+                } catch (error) {
+                    setLoading(false);
+                    showStatus('Error loading members data: ' + error.message, 'error');
+                    console.error('Error:', error);
+                }
+            }
+
+            // Make showEmailPopup function globally available
+            window.showEmailPopup = showEmailPopup;
+
+            // Event Listeners for top search
+            batchFilter.addEventListener('change', () => {
+                syncSearchElements();
+                currentPage = 1;
+                renderMembers();
+            });
+            
+            membershipFilter.addEventListener('change', () => {
+                syncSearchElements();
+                currentPage = 1;
+                renderMembers();
+            });
+            
+            idSearch.addEventListener('input', () => {
+                syncSearchElements();
+                currentPage = 1;
+                renderMembers();
+            });
+            
+            perPageSelect.addEventListener('change', () => {
+                syncSearchElements();
+                itemsPerPage = perPageSelect.value === 'all' ? 'all' : parseInt(perPageSelect.value);
+                currentPage = 1;
+                renderMembers();
+            });
+
+            // Event Listeners for bottom search
+            batchFilterBottom.addEventListener('change', () => {
+                batchFilter.value = batchFilterBottom.value;
+                currentPage = 1;
+                renderMembers();
+            });
+            
+            membershipFilterBottom.addEventListener('change', () => {
+                membershipFilter.value = membershipFilterBottom.value;
+                currentPage = 1;
+                renderMembers();
+            });
+            
+            idSearchBottom.addEventListener('input', () => {
+                idSearch.value = idSearchBottom.value;
+                currentPage = 1;
+                renderMembers();
+            });
+            
+            perPageSelectBottom.addEventListener('change', () => {
+                perPageSelect.value = perPageSelectBottom.value;
+                itemsPerPage = perPageSelect.value === 'all' ? 'all' : parseInt(perPageSelect.value);
+                currentPage = 1;
+                renderMembers();
+            });
+
+            // Pagination event listeners
+            prevPageBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderMembers();
+                }
+            });
+
+            nextPageBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderMembers();
+                }
+            });
+
+            prevPageBtnBottom.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderMembers();
+                }
+            });
+
+            nextPageBtnBottom.addEventListener('click', () => {
+                const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderMembers();
+                }
+            });
+
+            // Reset buttons
+            resetBtn.addEventListener('click', resetFilters);
+            resetBtnBottom.addEventListener('click', resetFilters);
+            resetBtn2.addEventListener('click', resetFilters);
+
+            function resetFilters() {
+                batchFilter.value = 'all';
+                membershipFilter.value = 'all';
+                idSearch.value = '';
+                perPageSelect.value = '15';
+                itemsPerPage = 15;
+                currentPage = 1;
+                syncSearchElements();
+                renderMembers();
+            }
+
+            allMembers = [];
+            initialize();
+        });
+    </script>
+
+</body>
+</html>

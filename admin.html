@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Committee - MBSTU Physics Alumni Association</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .nav-container {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .nav-container::-webkit-scrollbar { display: none; }
+    
+    /* Loading spinner */
+    .loading-spinner {
+        border: 4px solid #f3f4f6;
+        border-top: 4px solid #7c3aed;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Professional gradient backgrounds for cards */
+    .card-gradient-1 { background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); }
+    .card-gradient-2 { background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%); }
+    .card-gradient-3 { background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); }
+    .card-gradient-4 { background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%); }
+    .card-gradient-5 { background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%); }
+    .card-gradient-6 { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); }
+    
+    /* Gradient buttons */
+    .gradient-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .gradient-btn:hover {
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Status badges */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    .status-active {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+    .status-pending {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    
+    /* Membership badges */
+    .membership-badge {
+        background-color: #e0e7ff;
+        color: #3730a3;
+    }
+    
+    /* Executive card specific styles */
+    .executive-card {
+        position: relative;
+        overflow: hidden;
+    }
+	.executive-photo {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 100px;
+		height: 100px;
+		border-radius: 0 0.5rem 0 0.5rem;
+		box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.1);
+		object-fit: cover;
+		border-top: 3px solid #7c3aed;
+		border-right: 3px solid #7c3aed;
+		border-bottom: 3px solid #7c3aed;
+		border-left: 3px solid #7c3aed;
+	}
+	.post-badge {
+		background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+		color: white;
+		padding: 0.5rem 1rem;
+		border-radius: 0.5rem;
+		font-weight: 600;
+		text-align: center;
+		margin: 0.5rem 0;
+		box-shadow: 0 4px 6px rgba(124, 58, 237, 0.2);
+		border: 2px solid white;
+		position: relative;
+	}
+</style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+<!-- Header and Navigation -->
+<div class="bg-white shadow-md">
+    <div class="header text-center py-4 bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center sm:justify-between">
+            <!-- Logo and Title Container -->
+            <div class="flex items-center space-x-4 mb-4 sm:mb-0">
+                <!-- Logo Container - Increased size -->
+                <div class="logo-container w-24 h-24 bg-white rounded-full p-1 shadow-lg flex items-center justify-center">
+                    <img src="assets/Logo/Logo/logo_v1.png" alt="MBSTU Physics Alumni Association Logo" 
+                         class="w-full h-full object-contain"
+                         onerror="this.style.display='none'; document.querySelector('.logo-placeholder').style.display='flex';">
+                    <!-- Fallback placeholder if logo doesn't load -->
+                    <div class="logo-placeholder w-full h-full bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg hidden">
+                        MPAA
+                    </div>
+                </div>
+                
+                <!-- Title Container -->
+                <div class="text-left">
+                    <div class="main-title text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight">
+                        MBSTU PHYSICS ALUMNI ASSOCIATION
+                    </div>
+                    <div class="university-name text-sm sm:text-base lg:text-lg font-semibold mt-1 opacity-90">
+                        MAWLANA BHASHANI SCIENCE AND TECHNOLOGY UNIVERSITY
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="nav bg-white shadow-sm sticky top-0 z-50">
+        <div class="nav-container max-w-7xl mx-auto flex justify-start items-center space-x-2 sm:space-x-4 p-4 overflow-x-auto whitespace-nowrap">
+            <a href="index.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Home</a>
+            <a href="membership-form.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Become a Member</a>
+            <a href="members.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Current Members</a>
+            <a href="committee.html" class="nav-tab text-purple-600 font-bold border-b-2 border-purple-600 px-3 py-2 rounded-md text-sm sm:text-base">Committee</a>
+            <a href="alumni-news.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Alumni News</a>
+            <a href="activities.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Activities</a>
+            <a href="upcoming-events.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Upcoming Events</a>
+            <a href="admin.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Admin</a>
+        </div>
+    </nav>
+</div>
+
+<!-- Admin Login Section -->
+<div id="login-container" class="max-w-md mx-auto p-8 mt-8 bg-white rounded-lg shadow-sm border border-gray-200">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Administrator Access</h2>
+    
+    <!-- Email Step -->
+    <div id="email-step">
+        <form id="email-form">
+            <div class="mb-4">
+                <label for="admin-email" class="block text-gray-700 text-sm font-medium mb-2">Administrator Email</label>
+                <input type="email" id="admin-email" required 
+                       class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                       placeholder="Enter administrator email">
+            </div>
+            <button type="submit" id="send-code-btn" 
+                    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 px-4 rounded transition duration-200">
+                Send Verification Code
+            </button>
+        </form>
+    </div>
+    
+    <!-- Verification Code Step -->
+    <div id="code-step" class="hidden">
+        <form id="code-form">
+            <div class="mb-4">
+                <label for="verification-code" class="block text-gray-700 text-sm font-medium mb-2">Verification Code</label>
+                <input type="text" id="verification-code" required 
+                       class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                       placeholder="Enter 6-digit verification code">
+                <p class="text-xs text-gray-500 mt-1">Verification code has been sent to your email</p>
+            </div>
+            <button type="submit" 
+                    class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 px-4 rounded transition duration-200">
+                Verify & Access Panel
+            </button>
+        </form>
+        <button onclick="goBackToEmail()" 
+                class="w-full mt-3 bg-gray-500 hover:bg-gray-600 text-white font-medium py-2.5 px-4 rounded transition duration-200">
+            Back to Email Entry
+        </button>
+    </div>
+    
+    <div id="login-message" class="mt-4 text-center text-sm"></div>
+</div>
+
+<!-- Admin Panel Content (Hidden until authenticated) -->
+<div id="dashboard-container" class="hidden max-w-7xl mx-auto p-6">
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Member Management</h1>
+            <p class="text-gray-600 mt-1">Review and manage membership applications</p>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="loadData()" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-5 rounded transition duration-200">
+                Refresh Data
+            </button>
+            <button id="logout-btn" 
+                    class="bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 px-5 rounded transition duration-200">
+                Logout
+            </button>
+        </div>
+    </div>
+    
+    <!-- Status Panel -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-800">System Status</h3>
+                <div id="status" class="text-gray-600 mt-1">Ready to load data</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Applications Table -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-800">Membership Applications</h2>
+        </div>
+        <div id="applications-table" class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applicant</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Academic Info</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="applications-tbody" class="bg-white divide-y divide-gray-200">
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                            <div class="text-lg">No data loaded</div>
+                            <div class="text-sm mt-1">Click refresh to load applications</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 text-white text-center p-6 mt-12">
+    <p class="font-semibold">&copy; 2024 MBSTU Physics Alumni Association. All Rights Reserved.</p>
+</footer>
+
+<script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwp_sGD3hxl3R6EwZEqzaUGbr8ovV286a3y8TiYbH8PmLW4oazW191NG-pjdFfH2mle/exec';
+    const VERIFICATION_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyi74qvsmI_XhnxPUEBBNFuOyHJiUi8ptxB8e1WIM5DJcy6BeHNkWBLinGw6AqwdSW-oA/exec';
+    const ADMIN_EMAIL = 'mbstu.phy.alm@gmail.com';
+
+    const loginContainer = document.getElementById('login-container');
+    const dashboardContainer = document.getElementById('dashboard-container');
+    const emailForm = document.getElementById('email-form');
+    const codeForm = document.getElementById('code-form');
+    const emailStep = document.getElementById('email-step');
+    const codeStep = document.getElementById('code-step');
+    const sendCodeBtn = document.getElementById('send-code-btn');
+    const loginMessage = document.getElementById('login-message');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    // Function to go back to email step
+    function goBackToEmail() {
+        codeStep.classList.add('hidden');
+        emailStep.classList.remove('hidden');
+        loginMessage.textContent = '';
+    }
+
+    // --- VERIFICATION LOGIC ---
+    if (emailForm) {
+        emailForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            if (email.toLowerCase() !== ADMIN_EMAIL) {
+                loginMessage.textContent = 'Invalid administrator email address.'; 
+                loginMessage.className = 'mt-4 text-center text-sm text-red-600';
+                return;
+            }
+            sendCodeBtn.disabled = true; 
+            sendCodeBtn.textContent = 'Sending Code...'; 
+            loginMessage.textContent = '';
+            
+            const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+            const expiry = Date.now() + 10 * 60 * 1000;
+            sessionStorage.setItem('verificationCode', verificationCode);
+            sessionStorage.setItem('codeExpiry', expiry);
+            
+            // Show the verification code in console for testing (remove in production)
+            console.log('Verification Code:', verificationCode);
+            
+            fetch(VERIFICATION_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({ email, code: verificationCode }),
+            })
+            .then(() => {
+                emailStep.classList.add('hidden');
+                codeStep.classList.remove('hidden');
+                loginMessage.textContent = 'Verification code sent to your email.';
+                loginMessage.className = 'mt-4 text-center text-sm text-green-600';
+            })
+            .catch(error => {
+                loginMessage.textContent = 'Error: Could not send verification code.';
+                loginMessage.className = 'mt-4 text-center text-sm text-red-600';
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                sendCodeBtn.disabled = false; 
+                sendCodeBtn.textContent = 'Send Verification Code';
+            });
+        });
+    }
+
+    if (codeForm) {
+        codeForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const code = document.getElementById('verification-code').value;
+            const storedCode = sessionStorage.getItem('verificationCode');
+            const expiry = sessionStorage.getItem('codeExpiry');
+            
+            if (Date.now() > parseInt(expiry)) {
+                loginMessage.textContent = 'Verification code has expired. Please request a new one.';
+                loginMessage.className = 'mt-4 text-center text-sm text-red-600';
+                codeStep.classList.add('hidden'); 
+                emailStep.classList.remove('hidden'); 
+                return;
+            }
+            
+            if (code === storedCode) {
+                sessionStorage.setItem('isAdminAuthenticated', 'true'); 
+                showDashboard();
+                loginMessage.textContent = '';
+            } else { 
+                loginMessage.textContent = 'Invalid verification code. Please try again.';
+                loginMessage.className = 'mt-4 text-center text-sm text-red-600';
+            }
+        });
+    }
+
+    if(logoutBtn) {
+        logoutBtn.addEventListener('click', function () {
+            sessionStorage.removeItem('isAdminAuthenticated');
+            sessionStorage.removeItem('verificationCode');
+            sessionStorage.removeItem('codeExpiry');
+            loginContainer.classList.remove('hidden');
+            dashboardContainer.classList.add('hidden');
+            // Reset forms
+            emailStep.classList.remove('hidden');
+            codeStep.classList.add('hidden');
+            emailForm.reset();
+            codeForm.reset();
+            loginMessage.textContent = '';
+        });
+    }
+
+    function showDashboard() {
+        loginContainer.classList.add('hidden');
+        dashboardContainer.classList.remove('hidden');
+        if (!document.body.classList.contains('admin-initialized')) {
+            initializeAdminPanel();
+            document.body.classList.add('admin-initialized');
+        }
+    }
+
+    function initializeAdminPanel() {
+        // Load data when dashboard is shown
+        loadData();
+    }
+
+    if (sessionStorage.getItem('isAdminAuthenticated') === 'true') {
+        showDashboard();
+    }
+
+    // --- ADMIN PANEL FUNCTIONS ---
+    // Load data using JSONP
+    function loadData() {
+        updateStatus('Loading application data...', 'blue');
+        
+        // Remove any existing script
+        const oldScript = document.getElementById('jsonp-script');
+        if (oldScript) oldScript.remove();
+        
+        // Create script tag for JSONP
+        const script = document.createElement('script');
+        script.id = 'jsonp-script';
+        script.src = SCRIPT_URL + '?callback=handleData';
+        document.head.appendChild(script);
+    }
+
+    // Handle JSONP response
+    function handleData(data) {
+        console.log('Data received:', data);
+        
+        if (data.error) {
+            updateStatus('Error loading data: ' + data.error, 'red');
+            return;
+        }
+        
+        displayApplications(data.pending || [], data.approved || []);
+        updateStatus(`Loaded ${data.pending?.length || 0} pending and ${data.approved?.length || 0} approved applications`, 'green');
+    }
+
+    function displayApplications(pending, approved) {
+        const container = document.getElementById('applications-tbody');
+        const allApplications = [...pending, ...approved];
+        
+        if (allApplications.length === 0) {
+            container.innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                        <div class="text-lg">No applications found</div>
+                        <div class="text-sm mt-1">All applications have been processed</div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        container.innerHTML = allApplications.map(app => {
+            const isApproved = app.status === 'approved';
+            const isRejected = app.status === 'rejected';
+            const isUnderReview = app.status === 'Under_Review';
+            const paymentStatus = app.paymentStatus || 'pending';
+            
+            // Determine current status for dropdown
+            let currentStatus = '';
+            if (isApproved) currentStatus = 'approved';
+            else if (isRejected) currentStatus = 'rejected';
+            else if (isUnderReview) currentStatus = 'Under_Review';
+            
+            return `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="font-medium text-gray-900">${app.name}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${app.email}</div>
+                        <div class="text-sm text-gray-500">${app.phone}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">Batch: ${app.batch}</div>
+                        <div class="text-sm text-gray-500">ID: ${app.studentId}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isApproved ? 'bg-green-100 text-green-800' : isRejected ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}">
+                            ${app.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${paymentStatus === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                            ${paymentStatus}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex flex-col gap-2">
+                            <select onchange="handleStatusChange(${app.row}, '${app.name}', this.value)" 
+                                    class="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-purple-500">
+                                <option value="">Change Status</option>
+                                <option value="approved" ${currentStatus === 'approved' ? 'selected' : ''}>Approve</option>
+                                <option value="rejected" ${currentStatus === 'rejected' ? 'selected' : ''}>Reject</option>
+                                <option value="Under_Review" ${currentStatus === 'Under_Review' ? 'selected' : ''}>Under Review</option>
+                            </select>
+                            <select onchange="handlePaymentChange(${app.row}, '${app.name}', this.value)"
+                                    class="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-purple-500">
+                                <option value="">Change Payment</option>
+                                <option value="paid" ${paymentStatus === 'paid' ? 'selected' : ''}>Paid</option>
+                                <option value="pending" ${paymentStatus !== 'paid' ? 'selected' : ''}>Unpaid</option>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    async function handleStatusChange(row, name, status) {
+        if (!status) return;
+        
+        updateStatus(`Updating status for ${name}...`, 'blue');
+        
+        try {
+            const response = await updateStatusInSheet(row, status);
+            
+            if (response.success) {
+                updateStatus(`Status updated for ${name}`, 'green');
+                setTimeout(() => loadData(), 1000);
+            } else {
+                updateStatus(`Error: ${response.error}`, 'red');
+            }
+        } catch (error) {
+            updateStatus(`Error: ${error.message}`, 'red');
+        }
+    }
+
+    async function handlePaymentChange(row, name, paymentStatus) {
+        if (!paymentStatus) return;
+        
+        updateStatus(`Updating payment status for ${name}...`, 'blue');
+        
+        try {
+            const response = await updatePaymentStatusInSheet(row, paymentStatus);
+            
+            if (response.success) {
+                updateStatus(`Payment status updated for ${name}`, 'green');
+                setTimeout(() => loadData(), 1000);
+            } else {
+                updateStatus(`Error: ${response.error}`, 'red');
+            }
+        } catch (error) {
+            updateStatus(`Error: ${error.message}`, 'red');
+        }
+    }
+
+    // Update status using POST request
+    async function updateStatusInSheet(row, status) {
+        try {
+            const formData = new FormData();
+            formData.append('row', row);
+            formData.append('status', status);
+            
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            
+            return await response.json();
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Update payment status using POST request
+    async function updatePaymentStatusInSheet(row, paymentStatus) {
+        try {
+            const formData = new FormData();
+            formData.append('row', row);
+            formData.append('paymentStatus', paymentStatus);
+            
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            
+            return await response.json();
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Update status message with color
+    function updateStatus(message, color = 'blue') {
+        const statusEl = document.getElementById('status');
+        const colors = {
+            blue: 'text-blue-600',
+            green: 'text-green-600',
+            red: 'text-red-600',
+            gray: 'text-gray-600'
+        };
+        
+        statusEl.textContent = message;
+        statusEl.className = `mt-1 ${colors[color]}`;
+        
+        // Auto-clear success messages after 3 seconds
+        if (color === 'green') {
+            setTimeout(() => {
+                statusEl.textContent = 'System ready';
+                statusEl.className = 'mt-1 text-gray-600';
+            }, 3000);
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBSTU Physics Alumni Association</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .nav-container {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .nav-container::-webkit-scrollbar { display: none; }
+    
+    /* Map styles */
+    #alumni-map {
+        border-radius: 0.5rem;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Custom marker styles */
+    .custom-marker {
+        background: white;
+        border: 3px solid;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        overflow: hidden;
+    }
+    
+    .marker-blue { border-color: #3b82f6; }
+    
+    /* Loading spinner */
+    .loading-spinner {
+        border: 4px solid #f3f4f6;
+        border-top: 4px solid #7c3aed;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Professional gradient backgrounds for cards */
+    .card-gradient-1 { background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); }
+    .card-gradient-2 { background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%); }
+    .card-gradient-3 { background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); }
+    .card-gradient-4 { background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%); }
+    .card-gradient-5 { background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%); }
+    .card-gradient-6 { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); }
+    
+    /* Gradient buttons */
+    .gradient-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .gradient-btn:hover {
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .gradient-btn-blue {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .gradient-btn-blue:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .gradient-btn-orange {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .gradient-btn-orange:hover {
+        background: linear-gradient(135deg, #eab308 0%, #b45309 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .gradient-btn-green {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .gradient-btn-green:hover {
+        background: linear-gradient(135deg, #0d9669 0%, #047857 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+</style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+<!-- Header and Navigation -->
+<div class="bg-white shadow-md">
+    <div class="header text-center py-4 bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center sm:justify-between">
+            <!-- Logo and Title Container -->
+            <div class="flex items-center space-x-4 mb-4 sm:mb-0">
+                <!-- Logo Container - Increased size -->
+                <div class="logo-container w-24 h-24 bg-white rounded-full p-1 shadow-lg flex items-center justify-center">
+                    <img src="assets/Logo/Logo/logo_v1.png" alt="MBSTU Physics Alumni Association Logo" 
+                         class="w-full h-full object-contain"
+                         onerror="this.style.display='none'; document.querySelector('.logo-placeholder').style.display='flex';">
+                    <!-- Fallback placeholder if logo doesn't load -->
+                    <div class="logo-placeholder w-full h-full bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg hidden">
+                        MPAA
+                    </div>
+                </div>
+                
+                <!-- Title Container -->
+                <div class="text-left">
+                    <div class="main-title text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight">
+                        MBSTU PHYSICS ALUMNI ASSOCIATION
+                    </div>
+                    <div class="university-name text-sm sm:text-base lg:text-lg font-semibold mt-1 opacity-90">
+                        MAWLANA BHASHANI SCIENCE AND TECHNOLOGY UNIVERSITY
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="nav bg-white shadow-sm sticky top-0 z-50">
+        <div class="nav-container max-w-7xl mx-auto flex justify-start items-center space-x-2 sm:space-x-4 p-4 overflow-x-auto whitespace-nowrap">
+            <a href="index.html" class="nav-tab text-purple-600 font-bold border-b-2 border-purple-600 px-3 py-2 rounded-md text-sm sm:text-base">Home</a>
+            <a href="membership-form.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Become a Member</a>
+            <a href="members.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Current Members</a>
+            <a href="committee.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Committee</a>
+            <a href="alumni-news.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Alumni News</a>
+            <a href="activities.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Activities</a>
+            <a href="upcoming-events.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Upcoming Events</a>
+            <a href="admin.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Admin</a>
+        </div>
+    </nav>
+</div>
+
+<!-- Main Content Area -->
+<div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+
+    <!-- Hero Section -->
+    <section class="hero text-white rounded-lg shadow-lg overflow-hidden relative">
+        <!-- Rainbow Wave Gradient Background -->
+        <div class="rainbow-wave absolute inset-0"></div>
+        
+        <!-- Dark overlay for text readability -->
+        <div class="absolute inset-0 bg-black/30"></div>
+        
+        <div class="relative aspect-[4/1] flex items-center justify-center px-4 z-10">
+            <div class="text-center">
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight drop-shadow-lg">Connecting Our Physics Graduates Worldwide</h1>
+                <p class="mt-3 text-base sm:text-lg text-white max-w-2xl mx-auto drop-shadow">The MBSTU Physics Alumni Association brings together graduates from diverse fields at home and abroad to foster professional growth and promote social responsibility to contribute to alumni welfare and the advancement of the facilities of the Department of Physics and Bangladesh</p>
+                <a href="membership-form.html" class="mt-6 inline-block bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 backdrop-blur-sm">
+                    Join Our Community
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .rainbow-wave {
+            background: linear-gradient(
+                135deg,
+                #ff0000 0%,    /* Red */
+                #ff8000 16%,   /* Orange */
+                #ffff00 32%,   /* Yellow */
+                #00ff00 48%,   /* Green */
+                #00ffff 64%,   /* Cyan */
+                #0000ff 80%,   /* Blue */
+                #8000ff 100%   /* Purple */
+            );
+            background-size: 400% 400%;
+            animation: rainbowWave 12s ease-in-out infinite;
+        }
+        
+        @keyframes rainbowWave {
+            0% {
+                background-position: 0% 50%;
+                filter: hue-rotate(0deg) brightness(1);
+            }
+            25% {
+                background-position: 100% 50%;
+                filter: hue-rotate(90deg) brightness(1.1);
+            }
+            50% {
+                background-position: 100% 100%;
+                filter: hue-rotate(180deg) brightness(1.2);
+            }
+            75% {
+                background-position: 0% 100%;
+                filter: hue-rotate(270deg) brightness(1.1);
+            }
+            100% {
+                background-position: 0% 50%;
+                filter: hue-rotate(360deg) brightness(1);
+            }
+        }
+        
+        /* Additional wave layers for depth */
+        .rainbow-wave::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                45deg,
+                rgba(255, 0, 0, 0.3) 0%,
+                rgba(255, 128, 0, 0.3) 20%,
+                rgba(255, 255, 0, 0.3) 40%,
+                rgba(0, 255, 0, 0.3) 60%,
+                rgba(0, 255, 255, 0.3) 80%,
+                rgba(0, 0, 255, 0.3) 100%
+            );
+            background-size: 300% 300%;
+            animation: rainbowWave 8s ease-in-out infinite reverse;
+            mix-blend-mode: overlay;
+        }
+        
+        .rainbow-wave::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(128, 0, 255, 0.2) 0%,
+                rgba(255, 0, 0, 0.2) 25%,
+                rgba(255, 255, 0, 0.2) 50%,
+                rgba(0, 255, 0, 0.2) 75%,
+                rgba(0, 0, 255, 0.2) 100%
+            );
+            background-size: 500% 500%;
+            animation: rainbowWave 15s linear infinite;
+            mix-blend-mode: soft-light;
+        }
+    </style>
+
+    <!-- Our Purpose Section -->
+    <section>
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-3xl font-bold text-purple-800 mb-8 text-center">Our Purpose</h2>
+            <p class="text-center text-gray-600 mb-10 max-w-3xl mx-auto">
+                
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Networking -->
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-full flex justify-center gap-3 mx-auto mb-4 text-4xl">
+                        <span>🔍</span>
+                        <span>🕸️</span>
+                        <span>💡</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Networking</h3>
+                    <p class="text-gray-600 text-sm">
+                        Building a strong network of MBSTU Physics graduates at home and abroad — linking classrooms to careers — to share experiences and unlock new opportunities.
+                    </p>
+                </div>
+                
+                <!-- Career Guidance -->
+                <div class="bg-gradient-to-br from-purple-50 to-violet-100 rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-full flex justify-center gap-3 mx-auto mb-4 text-4xl">
+                        <span>💼</span>
+                        <span>👨🏻‍✈️</span>
+                        <span>🎓</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Career Guidance</h3>
+                    <p class="text-gray-600 text-sm">
+                        Helping members prepare for professional success — whether in government, academia, or the private sector — through mentorship, resources, and peer support.
+                    </p>
+                </div>
+                
+                <!-- Workshops -->
+                <div class="bg-gradient-to-br from-amber-50 to-orange-100 rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-full flex justify-center gap-3 mx-auto mb-4 text-4xl">
+                        <span>👨🏻‍💻</span>
+                        <span>👨🏻‍✈</span>
+                        <span>👨‍🎓</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Workshops</h3>
+                    <p class="text-gray-600 text-sm">
+                        Hosting sessions on professional readiness, skill development, and career planning to help alumni excel in higher education and job hunting at home and abroad.
+                    </p>
+                </div>
+                
+                <!-- Social Responsibility -->
+                <div class="bg-gradient-to-br from-red-50 to-pink-100 rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="w-full flex justify-center gap-3 mx-auto mb-4 text-4xl">
+                        <span>🌱</span>
+                        <span>☎️</span>
+                        <span>⛑️</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Social Responsibility</h3>
+                    <p class="text-gray-600 text-sm">
+                        Standing beside the community through charity, disaster response, and educational initiatives — reflecting the values of unity, empathy, and service.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Get-together Section -->
+            <div class="mt-12 bg-gradient-to-r from-purple-100 to-blue-100 rounded-xl p-8 text-center shadow-md">
+                <div class="flex flex-col items-center">
+                    <div class="w-full flex justify-center gap-4 mx-auto mb-4 text-4xl">
+                        <span>🤝</span>
+                        <span>☕</span>
+                        <span>⚽</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Community Gatherings</h3>
+                    <p class="text-gray-600 max-w-2xl mx-auto">
+                        Reunion programs, friendly sports, and cultural events connecting alumni while celebrating shared memories and professional achievements across generations.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Alumni Maps Section -->
+    <section>
+        <div class="bg-white shadow-lg rounded-lg p-6 space-y-4">
+            <h2 class="text-3xl font-bold text-purple-800 mb-4 text-center">Alumni Worldwide Network</h2>
+            
+            <!-- Map Controls -->
+            <div class="flex flex-wrap gap-4 justify-center mb-4">
+                <button onclick="showAllAlumni()" class="gradient-btn px-4 py-2 rounded-lg transition duration-300">
+                    Show All Alumni
+                </button>
+                <button onclick="showBangladeshAlumni()" class="gradient-btn-blue px-4 py-2 rounded-lg transition duration-300">
+                    Bangladesh Only
+                </button>
+                <button onclick="showInternationalAlumni()" class="gradient-btn-orange px-4 py-2 rounded-lg transition duration-300">
+                    International Only
+                </button>
+                <button onclick="refreshAlumniData()" class="gradient-btn-green px-4 py-2 rounded-lg transition duration-300">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh Data
+                </button>
+            </div>
+            
+            <!-- Loading Spinner -->
+            <div id="map-loading" class="text-center py-8">
+                <div class="loading-spinner"></div>
+                <p class="text-gray-600 mt-4">Loading alumni map...</p>
+            </div>
+            
+            <!-- Leaflet Map Container -->
+            <div id="alumni-map" class="w-full h-[500px] rounded-md overflow-hidden hidden">
+                <!-- Map will be loaded here -->
+            </div>
+            
+            <p class="text-center text-sm text-gray-500 mt-4" id="map-count">
+                Loading alumni locations...
+            </p>
+        </div>
+    </section>
+	
+	<!-- Member Statistics Section -->
+<section>
+    <div class="bg-gradient-to-br from-slate-50 to-blue-50 shadow-lg rounded-lg p-6 border border-gray-100">
+        <h2 class="text-3xl font-bold text-slate-800 mb-6 text-center">Alumni Statistics</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl p-4 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div class="text-2xl font-bold mb-1"><i class="fas fa-user-graduate mr-2"></i><span id="total-graduates">350+</span></div>
+                <div class="text-xs opacity-90">Total Graduates</div>
+            </div>
+            <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-4 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div class="text-2xl font-bold mb-1"><i class="fas fa-users mr-2"></i><span id="registered-alumni">0</span></div>
+                <div class="text-xs opacity-90">Registered Alumni</div>
+            </div>
+            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-4 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div class="text-2xl font-bold mb-1"><i class="fas fa-briefcase mr-2"></i><span id="working-professionals">0</span></div>
+                <div class="text-xs opacity-90">Working Professionals</div>
+            </div>
+            <div class="bg-gradient-to-br from-rose-500 to-pink-600 rounded-xl p-4 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div class="text-2xl font-bold mb-1"><i class="fas fa-globe-americas mr-2"></i><span id="abroad-members">0</span></div>
+                <div class="text-xs opacity-90">Members Abroad</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- News & Activities Section -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Latest News -->
+    <div class="bg-white shadow-lg rounded-lg p-6">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-purple-200 pb-2">Latest News</h3>
+        <div id="news-list" class="space-y-4">
+            <div class="p-4 rounded-md bg-gray-50 hover:bg-gray-100 transition">
+                <p class="font-semibold text-purple-700">Website Launched!</p>
+                <p class="text-sm text-gray-600">Official MBSTU Physics Alumni Association website is now live</p>
+                <p class="text-xs text-gray-500 mt-1">Date: Coming Soon</p>
+            </div>
+            <!-- Empty space for future news -->
+            <div class="p-4 rounded-md bg-gray-50 border-2 border-dashed border-gray-200 text-center">
+                <p class="text-sm text-gray-400">More news coming soon...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Activities -->
+    <div class="bg-white shadow-lg rounded-lg p-6">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-purple-200 pb-2">Upcoming Activities</h3>
+        <div id="activities-list" class="space-y-4">
+            <!-- Empty space for future activities -->
+            <div class="p-8 rounded-md bg-gray-50 border-2 border-dashed border-gray-200 text-center">
+                <i class="fas fa-calendar-plus text-3xl text-gray-300 mb-2"></i>
+                <p class="text-sm text-gray-400">Activities will be announced soon</p>
+            </div>
+            <div class="p-4 rounded-md bg-gray-50 border-2 border-dashed border-gray-200 text-center">
+                <p class="text-sm text-gray-400">Stay tuned for upcoming events</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+
+<!-- Footer -->
+<footer class="bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 text-white text-center p-6 mt-8">
+    <p class="font-semibold">&copy; 2024 MBSTU PHYSICS ALUMNI ASSOCIATION. All Rights Reserved.</p>
+</footer>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // Your Google Apps Script URL
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwp_sGD3hxl3R6EwZEqzaUGbr8ovV286a3y8TiYbH8PmLW4oazW191NG-pjdFfH2mle/exec';
+    const CACHE_KEY = 'alumni_map_cache';
+    const CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours
+
+    let map, markers = [], allAlumniData = [], geocodingCache = {};
+
+    // Bangladesh bounds
+    const bangladeshBounds = [[20.5, 88.0], [26.5, 92.5]];
+
+    // Initialize when page loads
+    document.addEventListener("DOMContentLoaded", function() {
+        updateStatistics();
+        initMap();
+    });
+
+    // --- PHOTO PROCESSING FUNCTIONS (from members.html) ---
+    function getProfilePhotoUrl(photoUrl, memberName) {
+        if (!photoUrl || photoUrl.trim() === '' || ['No Photo', 'N/A', 'None', 'data:'].includes(photoUrl) || photoUrl.includes('data:')) {
+            return generateInitialsPlaceholder(memberName);
+        }
+        
+        photoUrl = photoUrl.trim();
+        
+        if (photoUrl.includes('drive.google.com')) {
+            return convertToThumbnailUrl(photoUrl);
+        }
+        
+        if (isDirectImageUrl(photoUrl)) {
+            return photoUrl;
+        }
+        
+        return generateInitialsPlaceholder(memberName);
+    }
+
+    function convertToThumbnailUrl(url) {
+        const fileId = extractFileId(url);
+        if (fileId) {
+            return `https://drive.google.com/thumbnail?id=${fileId}&sz=1000`;
+        }
+        return url;
+    }
+
+    function extractFileId(url) {
+        const patterns = [
+            /\/d\/([^\/]+)/,
+            /id=([^&]+)/,
+            /\/file\/d\/([^\/]+)/,
+            /\/open\?id=([^&]+)/,
+            /thumbnail\?id=([^&]+)/
+        ];
+        
+        for (const pattern of patterns) {
+            const match = url.match(pattern);
+            if (match && match[1]) {
+                return match[1];
+            }
+        }
+        
+        return url.length === 33 && !url.includes('/') && !url.includes('.') ? url : null;
+    }
+
+    function isDirectImageUrl(url) {
+        return url.match(/\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i) || 
+               url.startsWith('data:image/') ||
+               url.includes('images.unsplash.com') ||
+               url.includes('placehold.co');
+    }
+
+    function generateInitialsPlaceholder(name) {
+        const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        return `data:image/svg+xml;base64,${btoa(`
+            <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grad)"/>
+                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" 
+                      font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+                      fill="white">${initials}</text>
+            </svg>
+        `)}`;
+    }
+
+    // --- MEMBER STATISTICS ---
+    function updateStatistics() {
+        // Fetch data from Google Apps Script
+        fetchAlumniStats()
+            .then(stats => {
+                document.getElementById('registered-alumni').textContent = stats.registeredAlumni;
+                document.getElementById('working-professionals').textContent = stats.workingProfessionals;
+                document.getElementById('abroad-members').textContent = stats.abroadMembers;
+            })
+            .catch(error => {
+                console.error('Error fetching alumni stats:', error);
+                // Fallback to sample data
+                document.getElementById('registered-alumni').textContent = '127';
+                document.getElementById('working-professionals').textContent = '89';
+                document.getElementById('abroad-members').textContent = '15';
+            });
+    }
+
+    function fetchAlumniStats() {
+        return new Promise((resolve, reject) => {
+            const oldScript = document.getElementById('stats-jsonp-script');
+            if (oldScript) oldScript.remove();
+            
+            window.handleAlumniStats = function(data) {
+                if (data.error) {
+                    reject(new Error(data.error));
+                    return;
+                }
+                
+                const approvedMembers = data.approved || [];
+                const registeredAlumni = approvedMembers.length;
+                const workingProfessionals = approvedMembers.filter(member => 
+                    member.profession && member.profession !== 'Student'
+                ).length;
+                const abroadMembers = approvedMembers.filter(member => 
+                    member.workCountry && member.workCountry.toLowerCase() !== 'bangladesh'
+                ).length;
+                
+                resolve({
+                    registeredAlumni,
+                    workingProfessionals,
+                    abroadMembers
+                });
+            };
+            
+            const script = document.createElement('script');
+            script.id = 'stats-jsonp-script';
+            script.src = SCRIPT_URL + '?callback=handleAlumniStats';
+            script.onerror = () => reject(new Error('Failed to load stats from server'));
+            document.head.appendChild(script);
+        });
+    }
+
+    // --- MAP FUNCTIONS ---
+    function initMap() {
+        // Show loading
+        document.getElementById('map-loading').classList.remove('hidden');
+        document.getElementById('alumni-map').classList.add('hidden');
+
+        // Load cached data or fetch new
+        const cached = getCachedData();
+        if (cached) {
+            console.log('Using cached data');
+            allAlumniData = cached.data;
+            geocodingCache = cached.geocodingCache;
+            initializeLeafletMap();
+        } else {
+            loadAlumniData();
+        }
+    }
+
+    function refreshAlumniData() {
+        // Clear cache and reload data
+        localStorage.removeItem(CACHE_KEY);
+        geocodingCache = {};
+        allAlumniData = [];
+        
+        // Show loading
+        document.getElementById('map-loading').classList.remove('hidden');
+        document.getElementById('alumni-map').classList.add('hidden');
+        
+        // Remove existing map if present
+        if (map) {
+            map.remove();
+            map = null;
+        }
+        
+        // Clear markers
+        markers.forEach(marker => {
+            if (map) map.removeLayer(marker);
+        });
+        markers = [];
+        
+        // Reload data
+        loadAlumniData();
+        
+        // Update statistics
+        updateStatistics();
+    }
+
+    function getCachedData() {
+        try {
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (!cached) return null;
+            const parsed = JSON.parse(cached);
+            if (Date.now() - parsed.timestamp > CACHE_DURATION) {
+                localStorage.removeItem(CACHE_KEY);
+                return null;
+            }
+            return parsed;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function saveToCache(data, geocodingCache) {
+        try {
+            const cacheData = {
+                data: data,
+                geocodingCache: geocodingCache,
+                timestamp: Date.now()
+            };
+            localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+        } catch (e) {
+            console.warn('Failed to save cache');
+        }
+    }
+
+    function loadAlumniData() {
+        document.getElementById('map-count').textContent = 'Loading alumni data...';
+        
+        const oldScript = document.getElementById('jsonp-script');
+        if (oldScript) oldScript.remove();
+        
+        window.handleAlumniData = function(data) {
+            if (data.error) {
+                console.error('Error:', data.error);
+                loadSampleData();
+                return;
+            }
+            console.log('Live data received:', data);
+            allAlumniData = data.approved || [];
+            document.getElementById('map-count').textContent = `Processing ${allAlumniData.length} alumni locations...`;
+            processAlumniLocations();
+        };
+        
+        const script = document.createElement('script');
+        script.id = 'jsonp-script';
+        script.src = SCRIPT_URL + '?callback=handleAlumniData';
+        script.onerror = () => {
+            console.error('Failed to load live data');
+            loadSampleData();
+        };
+        document.head.appendChild(script);
+    }
+
+    async function processAlumniLocations() {
+        for (const member of allAlumniData) {
+            try {
+                const locationQuery = getLocationQuery(member);
+                if (locationQuery) {
+                    const coordinates = await geocodeLocation(locationQuery);
+                    member.coordinates = coordinates;
+                    member.locationQuery = locationQuery;
+                } else {
+                    member.coordinates = [24.2513, 89.9167];
+                    member.locationQuery = 'MBSTU, Tangail';
+                }
+                await new Promise(resolve => setTimeout(resolve, 50));
+            } catch (error) {
+                console.error(`Error processing ${member.name}:`, error);
+                member.coordinates = [24.2513, 89.9167];
+                member.locationQuery = 'MBSTU, Tangail';
+            }
+        }
+        
+        saveToCache(allAlumniData, geocodingCache);
+        initializeLeafletMap();
+    }
+
+    function getLocationQuery(member) {
+        if (member.workCity && member.workCountry) return `${member.workCity}, ${member.workCountry}`;
+        if (member.workCity) return `${member.workCity}, Bangladesh`;
+        if (member.district && member.subDistrict) return `${member.subDistrict}, ${member.district}, Bangladesh`;
+        if (member.district) return `${member.district}, Bangladesh`;
+        if (member.workCountry) return member.workCountry;
+        return null;
+    }
+
+    async function geocodeLocation(query) {
+        if (geocodingCache[query]) {
+            return geocodingCache[query];
+        }
+        
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`
+            );
+            const data = await response.json();
+            if (data && data.length > 0) {
+                const coords = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                geocodingCache[query] = coords;
+                return coords;
+            }
+        } catch (error) {
+            console.warn(`Geocoding failed for "${query}"`);
+        }
+        
+        // Fallback coordinates
+        const hash = query.split('').reduce((a, b) => {
+            a = ((a << 5) - a) + b.charCodeAt(0);
+            return a & a;
+        }, 0);
+        
+        const coords = [
+            24.2513 + (hash % 100) / 1000 - 0.05,
+            89.9167 + ((hash * 7) % 100) / 1000 - 0.05
+        ];
+        
+        geocodingCache[query] = coords;
+        return coords;
+    }
+
+    function initializeLeafletMap() {
+        // Hide loading, show map
+        document.getElementById('map-loading').classList.add('hidden');
+        document.getElementById('alumni-map').classList.remove('hidden');
+
+        // Create map centered on MBSTU
+        map = L.map('alumni-map').setView([23.8103, 90.4125], 7);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 18
+        }).addTo(map);
+
+        renderAllMarkers();
+    }
+
+    function createCustomIcon(memberName, photoUrl) {
+        const initials = memberName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        
+        // Use the same photo processing as members.html
+        const processedPhotoUrl = getProfilePhotoUrl(photoUrl, memberName);
+        
+        const htmlContent = `
+            <div class="w-full h-full rounded-full overflow-hidden">
+                <img src="${processedPhotoUrl}" 
+                     class="w-full h-full object-cover" 
+                     alt="${memberName}"
+                     onerror="this.src='${generateInitialsPlaceholder(memberName)}'">
+            </div>
+        `;
+
+        return L.divIcon({
+            className: 'custom-marker marker-blue',
+            html: htmlContent,
+            iconSize: [48, 48],
+            iconAnchor: [24, 48],
+            popupAnchor: [0, -48]
+        });
+    }
+
+    function renderAllMarkers() {
+        markers.forEach(marker => map.removeLayer(marker));
+        markers = [];
+
+        allAlumniData.forEach(member => {
+            if (!member.coordinates) return;
+            
+            const isBangladesh = isInBangladesh(member);
+            const icon = createCustomIcon(member.name, member.photoUrl);
+            const marker = L.marker(member.coordinates, { icon: icon }).addTo(map);
+            
+            const googleMapsLink = `https://www.google.com/maps?q=${member.coordinates[0]},${member.coordinates[1]}`;
+            
+            // Get processed photo URL for popup
+            const popupPhotoUrl = getProfilePhotoUrl(member.photoUrl, member.name);
+            
+            const popupContent = `
+                <div style="min-width: 220px; padding: 12px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <img src="${popupPhotoUrl}" 
+                             style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 12px;"
+                             onerror="this.src='${generateInitialsPlaceholder(member.name)}'">
+                        <div>
+                            <h3 style="margin: 0 0 4px 0; color: #1f2937; font-weight: bold; font-size: 16px;">${member.name}</h3>
+                            <p style="margin: 0; color: #6b7280; font-size: 14px;">${member.profession || 'Alumni'}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="border-top: 1px solid #e5e7eb; padding-top: 8px;">
+                        <p style="margin: 4px 0; color: #374151; font-size: 14px;"><strong>Batch:</strong> ${member.batch || 'N/A'}</p>
+                        <p style="margin: 4px 0; color: #374151; font-size: 14px;"><strong>Location:</strong> ${member.locationQuery || 'Not specified'}</p>
+                        ${member.company ? `<p style="margin: 4px 0; color: #374151; font-size: 14px;"><strong>Company:</strong> ${member.company}</p>` : ''}
+                        
+                        <div style="display: inline-flex; align-items: center; padding: 4px 8px; background: #f1f5f9; border-radius: 4px; font-size: 12px; margin-top: 8px;">
+                            <span style="margin-right: 8px;">${isBangladesh ? '🇧🇩 Bangladesh' : '🌍 International'}</span>
+                            <a href="${googleMapsLink}" target="_blank" style="color: #3b82f6; text-decoration: none; font-size: 12px; margin-left: 8px;">View on Maps</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            marker.bindPopup(popupContent);
+            markers.push(marker);
+        });
+
+        updateMapCount('all');
+        
+        if (markers.length > 0) {
+            map.fitBounds(getAllBounds());
+        }
+    }
+
+    function isInBangladesh(member) {
+        const locationQuery = member.locationQuery || '';
+        return locationQuery.toLowerCase().includes('bangladesh');
+    }
+
+    // Filter functions
+    function showAllAlumni() {
+        markers.forEach(marker => map.addLayer(marker));
+        if (markers.length > 0) map.fitBounds(getAllBounds());
+        updateMapCount('all');
+    }
+
+    function showBangladeshAlumni() {
+        const bangladeshMarkers = markers.filter(marker => {
+            const content = marker.getPopup().getContent();
+            return content.includes('🇧🇩 Bangladesh');
+        });
+        
+        markers.forEach(marker => map.removeLayer(marker));
+        bangladeshMarkers.forEach(marker => map.addLayer(marker));
+        
+        if (bangladeshMarkers.length > 0) {
+            map.fitBounds(bangladeshBounds);
+        }
+        updateMapCount('bangladesh');
+    }
+
+    function showInternationalAlumni() {
+        const internationalMarkers = markers.filter(marker => {
+            const content = marker.getPopup().getContent();
+            return content.includes('🌍 International');
+        });
+        
+        markers.forEach(marker => map.removeLayer(marker));
+        internationalMarkers.forEach(marker => map.addLayer(marker));
+        
+        if (internationalMarkers.length > 0) {
+            const group = new L.featureGroup(internationalMarkers);
+            const bounds = group.getBounds();
+            if (bounds.isValid()) map.fitBounds(bounds);
+        }
+        updateMapCount('international');
+    }
+
+    function updateMapCount(filter) {
+        const total = allAlumniData.length;
+        const bangladeshCount = allAlumniData.filter(member => isInBangladesh(member)).length;
+        const internationalCount = total - bangladeshCount;
+
+        let countText = '';
+        if (filter === 'all') {
+            countText = `Showing all ${total} alumni (${bangladeshCount} in Bangladesh, ${internationalCount} international)`;
+        } else if (filter === 'bangladesh') {
+            countText = `Showing ${bangladeshCount} alumni in Bangladesh`;
+        } else if (filter === 'international') {
+            countText = `Showing ${internationalCount} international alumni`;
+        }
+
+        document.getElementById('map-count').textContent = countText;
+    }
+
+    function getAllBounds() {
+        const group = new L.featureGroup(markers);
+        return group.getBounds();
+    }
+
+</script>
+
+</body>
+</html>
