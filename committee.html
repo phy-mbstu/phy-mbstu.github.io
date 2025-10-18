@@ -193,398 +193,395 @@
 		<p class="font-semibold">&copy; 2024 MBSTU PHYSICS ALUMNI ASSOCIATION. All Rights Reserved.</p>
 	</footer>
 
-    <script>
-        // Your Google Apps Script URL
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwp_sGD3hxl3R6EwZEqzaUGbr8ovV286a3y8TiYbH8PmLW4oazW191NG-pjdFfH2mle/exec';
+<script>
+    // Your Google Apps Script URL
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwp_sGD3hxl3R6EwZEqzaUGbr8ovV286a3y8TiYbH8PmLW4oazW191NG-pjdFfH2mle/exec';
 
-        // Professional gradient classes for cards
-        const cardGradients = [
-            'card-gradient-1', 'card-gradient-2', 'card-gradient-3', 
-            'card-gradient-4', 'card-gradient-5', 'card-gradient-6'
-        ];
+    // Professional gradient classes for cards
+    const cardGradients = [
+        'card-gradient-1', 'card-gradient-2', 'card-gradient-3', 
+        'card-gradient-4', 'card-gradient-5', 'card-gradient-6'
+    ];
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const committeeGrid = document.getElementById('committee-grid');
-            const noCommitteeMessage = document.getElementById('no-committee-message');
-            const loadingSpinner = document.getElementById('loading-spinner');
-            const statusMessage = document.getElementById('status-message');
+    document.addEventListener('DOMContentLoaded', function () {
+        const committeeGrid = document.getElementById('committee-grid');
+        const noCommitteeMessage = document.getElementById('no-committee-message');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const statusMessage = document.getElementById('status-message');
 
-            // Show/hide loading spinner
-            function setLoading(loading) {
-                if (loading) {
-                    loadingSpinner.classList.remove('hidden');
-                    committeeGrid.classList.add('hidden');
-                    noCommitteeMessage.classList.add('hidden');
-                } else {
-                    loadingSpinner.classList.add('hidden');
-                    committeeGrid.classList.remove('hidden');
-                }
+        // Show/hide loading spinner
+        function setLoading(loading) {
+            if (loading) {
+                loadingSpinner.classList.remove('hidden');
+                committeeGrid.classList.add('hidden');
+                noCommitteeMessage.classList.add('hidden');
+            } else {
+                loadingSpinner.classList.add('hidden');
+                committeeGrid.classList.remove('hidden');
             }
+        }
 
-            // Show status message
-            function showStatus(message, type = 'info') {
-                const types = {
-                    'info': 'bg-blue-50 text-blue-700 border border-blue-200',
-                    'success': 'bg-green-50 text-green-700 border border-green-200',
-                    'error': 'bg-red-50 text-red-700 border border-red-200',
-                    'warning': 'bg-yellow-50 text-yellow-700 border border-yellow-200'
+        // Show status message
+        function showStatus(message, type = 'info') {
+            const types = {
+                'info': 'bg-blue-50 text-blue-700 border border-blue-200',
+                'success': 'bg-green-50 text-green-700 border border-green-200',
+                'error': 'bg-red-50 text-red-700 border border-red-200',
+                'warning': 'bg-yellow-50 text-yellow-700 border border-yellow-200'
+            };
+            
+            statusMessage.className = `p-4 rounded-lg text-center text-sm ${types[type]}`;
+            statusMessage.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} mr-2"></i> ${message}`;
+            statusMessage.classList.remove('hidden');
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusMessage.classList.add('hidden');
+                }, 5000);
+            }
+        }
+
+        // Show email popup
+        function showEmailPopup(email) {
+            const popup = document.createElement('div');
+            popup.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            popup.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Email Address</h3>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-600 mb-4 break-all">${email}</p>
+                    <div class="flex justify-end space-x-2">
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" class="px-4 py-2 text-gray-600 hover:text-gray-800">Close</button>
+                        <a href="mailto:${email}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Send Email</a>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(popup);
+        }
+
+        // Fetch approved members from Google Sheets using JSONP
+        function fetchApprovedMembers() {
+            return new Promise((resolve, reject) => {
+                const oldScript = document.getElementById('jsonp-script');
+                if (oldScript) oldScript.remove();
+                
+                window.handleMembersData = function(data) {
+                    if (data.error) {
+                        reject(new Error(data.error));
+                        return;
+                    }
+                    console.log('Data received:', data);
+                    resolve(data.approved || []);
                 };
                 
-                statusMessage.className = `p-4 rounded-lg text-center text-sm ${types[type]}`;
-                statusMessage.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} mr-2"></i> ${message}`;
-                statusMessage.classList.remove('hidden');
-                
-                if (type === 'success') {
-                    setTimeout(() => {
-                        statusMessage.classList.add('hidden');
-                    }, 5000);
-                }
-            }
+                const script = document.createElement('script');
+                script.id = 'jsonp-script';
+                script.src = SCRIPT_URL + '?callback=handleMembersData';
+                script.onerror = () => reject(new Error('Failed to load data from server'));
+                document.head.appendChild(script);
+            });
+        }
 
-            // Show email popup
-            function showEmailPopup(email) {
-                const popup = document.createElement('div');
-                popup.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
-                popup.innerHTML = `
-                    <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold text-gray-800">Email Address</h3>
-                            <button onclick="this.parentElement.parentElement.parentElement.remove()" class="text-gray-500 hover:text-gray-700">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <p class="text-gray-600 mb-4 break-all">${email}</p>
-                        <div class="flex justify-end space-x-2">
-                            <button onclick="this.parentElement.parentElement.parentElement.remove()" class="px-4 py-2 text-gray-600 hover:text-gray-800">Close</button>
-                            <a href="mailto:${email}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Send Email</a>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(popup);
-            }
-
-            // Fetch approved members from Google Sheets using JSONP
-            function fetchApprovedMembers() {
-                return new Promise((resolve, reject) => {
-                    const oldScript = document.getElementById('jsonp-script');
-                    if (oldScript) oldScript.remove();
-                    
-                    window.handleMembersData = function(data) {
-                        if (data.error) {
-                            reject(new Error(data.error));
-                            return;
-                        }
-                        console.log('Data received:', data);
-                        resolve(data.approved || []);
-                    };
-                    
-                    const script = document.createElement('script');
-                    script.id = 'jsonp-script';
-                    script.src = SCRIPT_URL + '?callback=handleMembersData';
-                    script.onerror = () => reject(new Error('Failed to load data from server'));
-                    document.head.appendChild(script);
-                });
-            }
-
-            // Photo URL function
-            function getProfilePhotoUrl(photoUrl, memberName) {
-                if (!photoUrl || photoUrl.trim() === '' || ['No Photo', 'N/A', 'None', 'data:'].includes(photoUrl) || photoUrl.includes('data:')) {
-                    return generateInitialsPlaceholder(memberName);
-                }
-                
-                photoUrl = photoUrl.trim();
-                
-                if (photoUrl.includes('drive.google.com')) {
-                    return convertToThumbnailUrl(photoUrl);
-                }
-                
-                if (isDirectImageUrl(photoUrl)) {
-                    return photoUrl;
-                }
-                
+        // Photo URL function
+        function getProfilePhotoUrl(photoUrl, memberName) {
+            if (!photoUrl || photoUrl.trim() === '' || ['No Photo', 'N/A', 'None', 'data:'].includes(photoUrl) || photoUrl.includes('data:')) {
                 return generateInitialsPlaceholder(memberName);
             }
-
-            function convertToThumbnailUrl(url) {
-                const fileId = extractFileId(url);
-                if (fileId) {
-                    return `https://drive.google.com/thumbnail?id=${fileId}&sz=1000`;
-                }
-                return url;
+            
+            photoUrl = photoUrl.trim();
+            
+            if (photoUrl.includes('drive.google.com')) {
+                return convertToThumbnailUrl(photoUrl);
             }
+            
+            if (isDirectImageUrl(photoUrl)) {
+                return photoUrl;
+            }
+            
+            return generateInitialsPlaceholder(memberName);
+        }
 
-            function extractFileId(url) {
-                const patterns = [
-                    /\/d\/([^\/]+)/,
-                    /id=([^&]+)/,
-                    /\/file\/d\/([^\/]+)/,
-                    /\/open\?id=([^&]+)/,
-                    /thumbnail\?id=([^&]+)/
-                ];
+        function convertToThumbnailUrl(url) {
+            const fileId = extractFileId(url);
+            if (fileId) {
+                return `https://drive.google.com/thumbnail?id=${fileId}&sz=1000`;
+            }
+            return url;
+        }
+
+        function extractFileId(url) {
+            const patterns = [
+                /\/d\/([^\/]+)/,
+                /id=([^&]+)/,
+                /\/file\/d\/([^\/]+)/,
+                /\/open\?id=([^&]+)/,
+                /thumbnail\?id=([^&]+)/
+            ];
+            
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match && match[1]) {
+                    return match[1];
+                }
+            }
+            
+            return url.length === 33 && !url.includes('/') && !url.includes('.') ? url : null;
+        }
+
+        function isDirectImageUrl(url) {
+            return url.match(/\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i) || 
+                   url.startsWith('data:image/') ||
+                   url.includes('images.unsplash.com') ||
+                   url.includes('placehold.co');
+        }
+
+        function generateInitialsPlaceholder(name) {
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            return `data:image/svg+xml;base64,${btoa(`
+                <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grad)"/>
+                    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" 
+                          font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+                          fill="white">${initials}</text>
+                </svg>
+            `)}`;
+        }
+
+        function getPaymentStatus(paymentStatus) {
+            if (paymentStatus === 'Paid') {
+                return {
+                    class: 'status-badge status-active',
+                    text: 'Active Member',
+                    icon: 'fa-check-circle'
+                };
+            } else {
+                return {
+                    class: 'status-badge status-pending',
+                    text: 'Payment Pending',
+                    icon: 'fa-clock'
+                };
+            }
+        }
+
+        function renderCommittee(committeeMembers) {
+            committeeGrid.innerHTML = '';
+
+            if (committeeMembers.length === 0) {
+                noCommitteeMessage.classList.remove('hidden');
+                committeeGrid.classList.add('hidden');
+            } else {
+                noCommitteeMessage.classList.add('hidden');
+                committeeGrid.classList.remove('hidden');
                 
-                for (const pattern of patterns) {
-                    const match = url.match(pattern);
-                    if (match && match[1]) {
-                        return match[1];
-                    }
-                }
-                
-                return url.length === 33 && !url.includes('/') && !url.includes('.') ? url : null;
-            }
-
-            function isDirectImageUrl(url) {
-                return url.match(/\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i) || 
-                       url.startsWith('data:image/') ||
-                       url.includes('images.unsplash.com') ||
-                       url.includes('placehold.co');
-            }
-
-            function generateInitialsPlaceholder(name) {
-                const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-                return `data:image/svg+xml;base64,${btoa(`
-                    <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <rect width="100%" height="100%" fill="url(#grad)"/>
-                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" 
-                              font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
-                              fill="white">${initials}</text>
-                    </svg>
-                `)}`;
-            }
-
-            function getPaymentStatus(paymentStatus) {
-                if (paymentStatus === 'Paid') {
-                    return {
-                        class: 'status-badge status-active',
-                        text: 'Active Member',
-                        icon: 'fa-check-circle'
-                    };
-                } else {
-                    return {
-                        class: 'status-badge status-pending',
-                        text: 'Payment Pending',
-                        icon: 'fa-clock'
-                    };
-                }
-            }
-
-            function renderCommittee(committeeMembers) {
-                committeeGrid.innerHTML = '';
-
-                if (committeeMembers.length === 0) {
-                    noCommitteeMessage.classList.remove('hidden');
-                    committeeGrid.classList.add('hidden');
-                } else {
-                    noCommitteeMessage.classList.add('hidden');
-                    committeeGrid.classList.remove('hidden');
+                committeeMembers.forEach((member, index) => {
+                    const cardGradient = cardGradients[index % cardGradients.length];
                     
-                    committeeMembers.forEach((member, index) => {
-                        const cardGradient = cardGradients[index % cardGradients.length];
-                        
-                        let locationText = 'Location not available';
-                        let locationQuery = '';
-                        if (member.workCity && member.workCountry) {
-                            locationText = `${member.workCity}, ${member.workCountry}`;
-                            locationQuery = `${member.workCity}, ${member.workCountry}`;
-                        } else if (member.subDistrict && member.district) {
-                            locationText = `${member.subDistrict}, ${member.district}`;
-                            locationQuery = `${member.subDistrict}, ${member.district}`;
-                        } else if (member.district) {
-                            locationText = `${member.district}`;
-                            locationQuery = `${member.district}`;
-                        }
+                    let locationText = 'Location not available';
+                    let locationQuery = '';
+                    if (member.workCity && member.workCountry) {
+                        locationText = `${member.workCity}, ${member.workCountry}`;
+                        locationQuery = `${member.workCity}, ${member.workCountry}`;
+                    } else if (member.subDistrict && member.district) {
+                        locationText = `${member.subDistrict}, ${member.district}`;
+                        locationQuery = `${member.subDistrict}, ${member.district}`;
+                    } else if (member.district) {
+                        locationText = `${member.district}`;
+                        locationQuery = `${member.district}`;
+                    }
 
-                        const googleMapsLink = locationQuery ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationQuery)}` : '#';
+                    const googleMapsLink = locationQuery ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationQuery)}` : '#';
 
-                        const batchInfoHTML = (member.batch && member.session) ? 
-                            `<p class="text-xs text-gray-500"><i class="fas fa-graduation-cap mr-1 text-gray-500"></i>Batch: ${member.batch}, Session: ${member.session}</p>` : 
-                            (member.batch ? `<p class="text-xs text-gray-500"><i class="fas fa-graduation-cap mr-1 text-gray-500"></i>Batch: ${member.batch}</p>` : '');
-                        
-                        // Executive member badge
-                        const executiveBadgeHTML = `
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium membership-badge">
-                                <i class="fas fa-crown mr-1"></i>
-                                Executive Member
-                            </span>
-                        `;
+                    // Fixed batch info with proper icon alignment
+                    const batchInfoHTML = (member.batch && member.session) ? 
+                        `<p class="text-xs text-gray-500 flex items-start"><i class="fas fa-graduation-cap mr-2 text-gray-500 w-4 text-center mt-0.5"></i>Batch: ${member.batch}, Session: ${member.session}</p>` : 
+                        (member.batch ? `<p class="text-xs text-gray-500 flex items-start"><i class="fas fa-graduation-cap mr-2 text-gray-500 w-4 text-center mt-0.5"></i>Batch: ${member.batch}</p>` : '');
+                    
+                    // Executive member badge
+                    const executiveBadgeHTML = `
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium membership-badge">
+                            <i class="fas fa-crown mr-1"></i>
+                            Executive Member
+                        </span>
+                    `;
 
-                        // Payment status based on paymentStatus field
-                        const paymentStatus = getPaymentStatus(member.paymentStatus);
+                    // Payment status based on paymentStatus field
+                    const paymentStatus = getPaymentStatus(member.paymentStatus);
 
-                        // Education Section
-                        const mbstuDegree = member.degree || 'B.Sc. in Physics';
-                        const lastDegree = member.lastDegree;
-                        const university = member.university;
-                        
-                        const educationHTML = `
-                            <div class="space-y-1 text-sm">
-                                <div class="text-gray-700">
-                                    <i class="fas fa-graduation-cap mr-1 text-gray-500"></i>
-                                    ${mbstuDegree}, MBSTU
-                                </div>
-                                ${lastDegree && university ? `
-                                <div class="text-gray-600">
-                                    <i class="fas fa-user-graduate mr-1 text-gray-500"></i>
-                                    ${lastDegree}, ${university}
-                                </div>
-                                ` : ''}
+                    // Education Section with proper icon alignment
+                    const mbstuDegree = member.degree || 'B.Sc. in Physics';
+                    const lastDegree = member.lastDegree;
+                    const university = member.university;
+                    
+                    const educationHTML = `
+                        <div class="space-y-1 text-sm">
+                            <div class="text-gray-700 flex items-start">
+                                <i class="fas fa-graduation-cap mr-2 text-gray-500 w-4 text-center mt-0.5"></i>
+                                <span>${mbstuDegree}, MBSTU</span>
                             </div>
-                        `;
-
-                        // Role & Company in 2 columns
-                        const roleCompanyHTML = (member.role || member.company) ? `
-                            <div class="grid grid-cols-2 gap-2 text-sm">
-                                ${member.role ? `
-                                <div class="text-gray-700">
-                                    <i class="fas fa-briefcase mr-1 text-gray-500"></i>
-                                    ${member.role}
-                                </div>
-                                ` : '<div></div>'}
-                                ${member.company ? `
-                                <div class="text-gray-600">
-                                    <i class="fas fa-building mr-1 text-gray-500"></i>
-                                    ${member.company}
-                                </div>
-                                ` : '<div></div>'}
+                            ${lastDegree && university ? `
+                            <div class="text-gray-600 flex items-start">
+                                <i class="fas fa-user-graduate mr-2 text-gray-500 w-4 text-center mt-0.5"></i>
+                                <span>${lastDegree}, ${university}</span>
                             </div>
-                        ` : '';
+                            ` : ''}
+                        </div>
+                    `;
 
-                        // Email & LinkedIn in 2 columns
-                        const emailLinkedInHTML = (member.email && member.email !== 'No Email') || member.linkedin ? `
-                            <div class="grid grid-cols-2 gap-2 text-sm">
-                                ${member.email && member.email !== 'No Email' ? `
-                                <div class="text-gray-700">
-                                    <i class="fas fa-envelope mr-1 text-gray-500"></i>
-                                    <button onclick="showEmailPopup('${member.email}')" class="hover:text-blue-600 underline">Send Email</button>
-                                </div>
-                                ` : '<div></div>'}
-                                ${member.linkedin ? `
-                                <div class="text-gray-600">
-                                    <i class="fab fa-linkedin mr-1 text-gray-500"></i>
-                                    <a href="${member.linkedin}" target="_blank" class="hover:text-blue-600">LinkedIn Profile</a>
-                                </div>
-                                ` : '<div></div>'}
+                    // Role & Company in 2 columns with proper icon alignment
+                    const roleCompanyHTML = (member.role || member.company) ? `
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            ${member.role ? `
+                            <div class="text-gray-700 flex items-start">
+                                <i class="fas fa-briefcase mr-2 text-gray-500 w-4 text-center mt-0.5"></i>
+                                <span>${member.role}</span>
                             </div>
-                        ` : '';
-
-                        // Phone & Location in 2 columns
-                        const phoneLocationHTML = (member.phone && member.phone !== 'No Phone' && member.phone !== '8107066021508') || locationQuery ? `
-                            <div class="grid grid-cols-2 gap-2 text-sm">
-                                ${member.phone && member.phone !== 'No Phone' && member.phone !== '8107066021508' ? `
-                                <div class="text-gray-700">
-                                    <i class="fas fa-phone mr-1 text-gray-500"></i>
-                                    ${member.phone}
-                                </div>
-                                ` : '<div></div>'}
-                                ${locationQuery ? `
-                                <div class="text-gray-600">
-                                    <i class="fas fa-map-marker-alt mr-1 text-gray-500"></i>
-                                    <a href="${googleMapsLink}" target="_blank" class="hover:text-red-600">${locationText}</a>
-                                </div>
-                                ` : '<div></div>'}
+                            ` : '<div></div>'}
+                            ${member.company ? `
+                            <div class="text-gray-600 flex items-start">
+                                <i class="fas fa-building mr-2 text-gray-500 w-4 text-center mt-0.5"></i>
+                                <span>${member.company}</span>
                             </div>
-                        ` : '';
+                            ` : '<div></div>'}
+                        </div>
+                    ` : '';
 
-                        const profilePhotoUrl = getProfilePhotoUrl(member.photoUrl, member.name);
+                    // Email & LinkedIn in 2 columns with proper icon alignment
+                    const emailLinkedInHTML = (member.email && member.email !== 'No Email') || member.linkedin ? `
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            ${member.email && member.email !== 'No Email' ? `
+                            <div class="text-gray-700 flex items-start">
+                                <i class="fas fa-envelope mr-2 text-gray-500 w-4 text-center mt-0.5"></i>
+                                <button onclick="showEmailPopup('${member.email}')" class="hover:text-blue-600 underline">Send Email</button>
+                            </div>
+                            ` : '<div></div>'}
+                            ${member.linkedin ? `
+                            <div class="text-gray-600 flex items-start">
+                                <i class="fab fa-linkedin mr-2 text-gray-500 w-4 text-center mt-0.5"></i>
+                                <a href="${member.linkedin}" target="_blank" class="hover:text-blue-600">LinkedIn</a>
+                            </div>
+                            ` : '<div></div>'}
+                        </div>
+                    ` : '';
 
-const committeeCard = `
-    <div class="executive-card rounded-lg p-4 sm:p-5 flex flex-col h-full ${cardGradient}">
-        <!-- Post Badge - AT THE BEGINNING -->
-        <div class="post-badge mb-3">
-            <i class="fas fa-user-tie mr-2"></i>
-            ${member.executivepost || 'Committee Member'}
-        </div>
-        
-        <!-- Header Section with photo in top right - FIXED OVERLAP -->
-        <div class="relative mb-3">
-            <div class="flex items-start">
-                <div class="flex-1 min-w-0 pr-28">
-                    <h3 class="text-base sm:text-lg font-bold text-gray-800 truncate">${member.name}</h3>
-                    ${batchInfoHTML}
-                    <div class="mt-1">${executiveBadgeHTML}</div>
-                </div>
-            </div>
-            <img class="executive-photo" 
-                 src="${profilePhotoUrl}" 
-                 alt="Profile of ${member.name}"
-                 loading="lazy"
-                 onerror="this.src='${generateInitialsPlaceholder(member.name)}'">
-        </div>
-        
-        <!-- Education -->
-        <div class="mb-3">
-            ${educationHTML}
-        </div>
-        
-        <!-- Role & Company -->
-        ${roleCompanyHTML}
-        
-        <!-- Email & LinkedIn -->
-        ${emailLinkedInHTML}
-        
-        <!-- Phone & Location -->
-        ${phoneLocationHTML}
-        
-        <!-- Status -->
-        <div class="mt-auto pt-3 border-t border-gray-100">
-            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${paymentStatus.class}">
-                <i class="fas ${paymentStatus.icon} mr-1"></i>
-                ${paymentStatus.text}
-            </span>
-        </div>
-    </div>
-`;
-                        committeeGrid.innerHTML += committeeCard;
+                    // Phone & Location in 2 columns with proper icon alignment
+                    const phoneLocationHTML = (member.phone && member.phone !== 'No Phone' && member.phone !== '8107066021508') || locationQuery ? `
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            ${member.phone && member.phone !== 'No Phone' && member.phone !== '8107066021508' ? `
+                            <div class="text-gray-700 flex items-start">
+                                <i class="fas fa-phone mr-2 text-gray-500 w-4 text-center mt-0.5"></i>
+                                <span>${member.phone}</span>
+                            </div>
+                            ` : '<div></div>'}
+                            ${locationQuery ? `
+                            <div class="text-gray-600 flex items-start">
+                                <i class="fas fa-map-marker-alt mr-2 text-gray-500 w-4 text-center mt-0.5"></i>
+                                <a href="${googleMapsLink}" target="_blank" class="hover:text-red-600">${locationText}</a>
+                            </div>
+                            ` : '<div></div>'}
+                        </div>
+                    ` : '';
+
+                    const profilePhotoUrl = getProfilePhotoUrl(member.photoUrl, member.name);
+
+                    const committeeCard = `
+                        <div class="executive-card rounded-lg p-4 sm:p-5 flex flex-col h-full ${cardGradient}">
+                            <!-- Post Badge - AT THE BEGINNING -->
+                            <div class="post-badge mb-3">
+                                <i class="fas fa-user-tie mr-2"></i>
+                                ${member.executivepost || 'Committee Member'}
+                            </div>
+                            
+                            <!-- Header Section with photo in top right - FIXED OVERLAP -->
+                            <div class="relative mb-3">
+                                <div class="flex items-start">
+                                    <div class="flex-1 min-w-0 pr-28">
+                                        <h3 class="text-base sm:text-lg font-bold text-gray-800 truncate">${member.name}</h3>
+                                        ${batchInfoHTML}
+                                        <div class="mt-1">${executiveBadgeHTML}</div>
+                                    </div>
+                                </div>
+                                <img class="executive-photo" 
+                                     src="${profilePhotoUrl}" 
+                                     alt="Profile of ${member.name}"
+                                     loading="lazy"
+                                     onerror="this.src='${generateInitialsPlaceholder(member.name)}'">
+                            </div>
+                            
+                            <!-- Education -->
+                            <div class="mb-3">
+                                ${educationHTML}
+                            </div>
+                            
+                            <!-- Role & Company -->
+                            ${roleCompanyHTML}
+                            
+                            <!-- Email & LinkedIn -->
+                            ${emailLinkedInHTML}
+                            
+                            <!-- Phone & Location -->
+                            ${phoneLocationHTML}
+                            
+                            <!-- Status -->
+                            <div class="mt-auto pt-3 border-t border-gray-100">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${paymentStatus.class}">
+                                    <i class="fas ${paymentStatus.icon} mr-1"></i>
+                                    ${paymentStatus.text}
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                    committeeGrid.innerHTML += committeeCard;
+                });
+            }
+        }
+
+        async function initialize() {
+            try {
+                setLoading(true);
+                const approvedMembers = await fetchApprovedMembers();
+                
+                // Filter only executive committee members
+                const committeeMembers = approvedMembers.filter(member => 
+                    member.executive && member.executive.toLowerCase() === 'yes'
+                );
+                
+                // Sort by rank if available
+                if (committeeMembers.length > 0 && committeeMembers[0].rank) {
+                    committeeMembers.sort((a, b) => {
+                        const rankA = parseInt(a.rank) || 999;
+                        const rankB = parseInt(b.rank) || 999;
+                        return rankA - rankB;
                     });
                 }
-            }
-
-            async function initialize() {
-                try {
-                    setLoading(true);
-                    const approvedMembers = await fetchApprovedMembers();
-                    
-                    // Filter only executive committee members
-                    const committeeMembers = approvedMembers.filter(member => 
-                        member.executive && member.executive.toLowerCase() === 'yes'
-                    );
-                    
-                    // Sort by rank if available
-                    if (committeeMembers.length > 0 && committeeMembers[0].rank) {
-                        committeeMembers.sort((a, b) => {
-                            const rankA = parseInt(a.rank) || 999;
-                            const rankB = parseInt(b.rank) || 999;
-                            return rankA - rankB;
-                        });
-                    }
-                    
-                    renderCommittee(committeeMembers);
-                    setLoading(false);
-                    
-                    if (committeeMembers.length > 0) {
-                        showStatus(`Loaded ${committeeMembers.length} executive committee members`, 'success');
-                    } else {
-                        showStatus('No executive committee members found. Committee members will appear here once assigned.', 'info');
-                    }
-                } catch (error) {
-                    setLoading(false);
-                    showStatus('Error loading committee data: ' + error.message, 'error');
-                    console.error('Error:', error);
+                
+                renderCommittee(committeeMembers);
+                setLoading(false);
+                
+                if (committeeMembers.length > 0) {
+                    showStatus(`Loaded ${committeeMembers.length} executive committee members`, 'success');
+                } else {
+                    showStatus('No executive committee members found. Committee members will appear here once assigned.', 'info');
                 }
+            } catch (error) {
+                setLoading(false);
+                showStatus('Error loading committee data: ' + error.message, 'error');
+                console.error('Error:', error);
             }
+        }
 
-            // Make showEmailPopup function globally available
-            window.showEmailPopup = showEmailPopup;
+        // Make showEmailPopup function globally available
+        window.showEmailPopup = showEmailPopup;
 
-            initialize();
-        });
-    </script>
-
-</body>
-
-</html>
+        initialize();
+    });
+</script> 
