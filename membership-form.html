@@ -515,6 +515,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    // ADDED: "Others" text box functionality
+    const degreeSelect = document.getElementById('lastDegree');
+    const otherDegreeContainer = document.getElementById('otherDegreeContainer');
+    const otherDegreeInput = document.getElementById('otherDegree');
+
+    degreeSelect.addEventListener('change', function() {
+        if (this.value === 'Others') {
+            otherDegreeContainer.classList.remove('hidden');
+            otherDegreeInput.focus();
+        } else {
+            otherDegreeContainer.classList.add('hidden');
+            otherDegreeInput.value = '';
+        }
+    });
+    // END OF ADDED CODE
+
     const updateStepUI = () => {
         const isDonor = membershipTypeSelect.value === 'Donor';
 
@@ -796,4 +812,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </body>
 </html>
-
