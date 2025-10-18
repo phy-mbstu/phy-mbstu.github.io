@@ -651,10 +651,7 @@
                         
                         const membershipInfo = getMembershipTypeFull(member.membershipType);
 						const membershipTypeHTML = member.membershipType ? 
-						    `<div class="flex items-center"><span class="inline-flex items-center px-2 py-1 rounded-full text-xs membership-badge">
-						        <i class="fas ${membershipInfo.icon} mr-1"></i>
-						        ${membershipInfo.text}
-						    </span></div>` : '';
+						    `<div class="text-xs text-gray-500 flex items-center"><i class="fas ${membershipInfo.icon} mr-2 text-gray-500 w-4"></i>${membershipInfo.text}</div>` : '';
 
                         // Payment status based on paymentStatus field
                         const paymentStatus = getPaymentStatus(member.paymentStatus);
@@ -927,6 +924,7 @@
 </body>
 
 </html>
+
 
 
 
