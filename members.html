@@ -651,7 +651,7 @@
                         
                         const membershipInfo = getMembershipTypeFull(member.membershipType);
 						const membershipTypeHTML = member.membershipType ? 
-						    `<div class="text-xs text-gray-500 flex items-center"><i class="fas ${membershipInfo.icon} mr-2 text-gray-500 w-4"></i>${membershipInfo.text}</div>` : '';
+						    `<div class="text-xs text-gray-500 flex items-center"><i class="fas ${membershipInfo.icon} mr-1 text-gray-500 w-4"></i>${membershipInfo.text}</div>` : '';
 
                         // Payment status based on paymentStatus field
                         const paymentStatus = getPaymentStatus(member.paymentStatus);
@@ -661,20 +661,20 @@
                         const lastDegree = member.lastDegree;
                         const university = member.university;
                         
-                        const educationHTML = `
-                            <div class="space-y-1 text-sm">
-                                <div class="text-gray-700">
-                                    <i class="fas fa-graduation-cap mr-1 text-gray-500"></i>
-                                    ${mbstuDegree}, MBSTU
-                                </div>
-                                ${lastDegree && university ? `
-                                <div class="text-gray-600">
-                                    <i class="fas fa-user-graduate mr-1 text-gray-500"></i>
-                                    ${lastDegree}, ${university}
-                                </div>
-                                ` : ''}
-                            </div>
-                        `;
+const educationHTML = `
+    <div class="space-y-1 text-sm">
+        <div class="text-gray-700 flex items-start">
+            <i class="fas fa-graduation-cap mr-2 text-gray-500 w-4 text-center mt-0.5"></i>
+            <span>${mbstuDegree}, MBSTU</span>
+        </div>
+        ${lastDegree && university ? `
+        <div class="text-gray-600 flex items-start">
+            <i class="fas fa-user-graduate mr-2 text-gray-500 w-4 text-center mt-0.5"></i>
+            <span>${lastDegree}, ${university}</span>
+        </div>
+        ` : ''}
+    </div>
+`;
 
 						// Role & Company in 2 columns - with "Open to Work" for empty work info
 						const roleCompanyHTML = (member.role || member.company) ? `
