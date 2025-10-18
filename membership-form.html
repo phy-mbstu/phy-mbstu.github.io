@@ -765,7 +765,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 company: document.getElementById('company').value,
                 workCity: document.getElementById('workCity').value,
                 workCountry: document.getElementById('workCountry').value,
-                lastDegree: document.getElementById('lastDegree').value,
+                lastDegree: degreeSelect.value === 'Others' ? otherDegreeInput.value : degreeSelect.value,
                 university: document.getElementById('university').value,
                 linkedin: document.getElementById('linkedin').value,
             },
