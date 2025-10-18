@@ -165,35 +165,35 @@
 <!-- Main Content Area -->
 <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
 
-<!-- Hero Section -->
-<section class="hero text-white rounded-lg shadow-lg overflow-hidden relative">
-    <!-- Simplified Gradient Background -->
-    <div class="absolute inset-0 bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900"></div>
-    
-    <!-- Dark overlay for text readability -->
-    <div class="absolute inset-0 bg-black/30"></div>
-    
-    <div class="relative aspect-[4/1] flex items-center justify-center px-4 z-10">
-        <div class="text-center max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight drop-shadow-lg mb-4 sm:mb-6">
-                Connecting Our Physics Graduates Worldwide
-            </h1>
-            <p class="text-base sm:text-lg text-white max-w-2xl mx-auto drop-shadow mb-6 sm:mb-8">
-                The MBSTU Physics Alumni Association brings together graduates from diverse fields at home and abroad to foster professional growth and promote social responsibility to contribute to alumni welfare and the advancement of the facilities of the Department of Physics and Bangladesh
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="membership-form.html" class="inline-block bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-6 sm:px-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
-                    Join Our Community
-                </a>
-                <button onclick="scrollToAlumniMap()" class="inline-block bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold py-3 px-6 sm:px-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
-                    View Alumni Map
-                </button>
-            </div>
-        </div>
-    </div>
-</section>
+	<!-- Hero Section -->
+	<section class="hero text-white rounded-lg shadow-lg overflow-hidden relative">
+		<!-- Background Image -->
+		<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('assets/hero.jpg');"></div>
+		
+		<!-- Dark overlay for text readability -->
+		<div class="absolute inset-0 bg-black/50"></div>
+		
+		<div class="relative aspect-[4/1] flex items-center justify-center px-4 z-10">
+			<div class="text-center max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+				<h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight drop-shadow-lg mb-2 sm:mb-3">
+					Connecting Our Physics Graduates Worldwide
+				</h1>
+				<p class="text-base sm:text-lg text-white max-w-2xl mx-auto drop-shadow mb-4 sm:mb-6">
+					The MBSTU Physics Alumni Association brings together graduates from diverse fields at home and abroad to foster professional growth and promote social responsibility to contribute to alumni welfare and the advancement of the facilities of the Department of Physics and Bangladesh
+				</p>
+				<div class="flex flex-col sm:flex-row gap-4 justify-center">
+					<a href="membership-form.html" class="inline-block bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-6 sm:px-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
+						Join Our Community
+					</a>
+					<button onclick="scrollToAlumniMap()" class="inline-block bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold py-3 px-6 sm:px-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
+						View Alumni Map
+					</button>
+				</div>
+			</div>
+		</div>
+	</section>
 
-<script>
+	<script>
     function scrollToAlumniMap() {
         document.getElementById('alumni-map').scrollIntoView({ 
             behavior: 'smooth',
@@ -205,11 +205,8 @@
     <!-- Our Purpose Section -->
     <section>
         <div class="bg-white shadow-lg rounded-lg p-6">
-            <h2 class="text-3xl font-bold text-purple-800 mb-8 text-center">Our Purpose</h2>
-            <p class="text-center text-gray-600 mb-10 max-w-3xl mx-auto">
-                
-            </p>
-            
+            <h2 class="text-3xl font-bold text-purple-800 mb-4 text-center">Our Purpose</h2>
+           
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Networking -->
                 <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
@@ -281,68 +278,72 @@
         </div>
     </section>
 
-    <!-- Interactive Alumni Maps Section -->
-    <section>
-        <div class="bg-white shadow-lg rounded-lg p-6 space-y-4">
-            <h2 class="text-3xl font-bold text-purple-800 mb-4 text-center">Alumni Worldwide Network</h2>
-            
-            <!-- Map Controls -->
-            <div class="flex flex-wrap gap-4 justify-center mb-4">
-                <button onclick="showAllAlumni()" class="gradient-btn px-4 py-2 rounded-lg transition duration-300">
-                    Show All Alumni
-                </button>
-                <button onclick="showBangladeshAlumni()" class="gradient-btn-blue px-4 py-2 rounded-lg transition duration-300">
-                    Bangladesh Only
-                </button>
-                <button onclick="showInternationalAlumni()" class="gradient-btn-orange px-4 py-2 rounded-lg transition duration-300">
-                    International Only
-                </button>
-                <button onclick="refreshAlumniData()" class="gradient-btn-green px-4 py-2 rounded-lg transition duration-300">
-                    <i class="fas fa-sync-alt mr-2"></i>Refresh Data
-                </button>
-            </div>
-            
-            <!-- Loading Spinner -->
-            <div id="map-loading" class="text-center py-8">
-                <div class="loading-spinner"></div>
-                <p class="text-gray-600 mt-4">Loading alumni map...</p>
-            </div>
-            
-            <!-- Leaflet Map Container -->
-            <div id="alumni-map" class="w-full h-[500px] rounded-md overflow-hidden hidden">
-                <!-- Map will be loaded here -->
-            </div>
-            
-            <p class="text-center text-sm text-gray-500 mt-4" id="map-count">
-                Loading alumni locations...
-            </p>
-        </div>
-    </section>
+	<!-- Interactive Alumni Maps Section -->
+	<section>
+		<div class="bg-white shadow-lg rounded-lg p-4 sm:p-6 space-y-4">
+			<h2 class="text-2xl sm:text-3xl font-bold text-purple-800 mb-4 text-center">Alumni Worldwide Network</h2>
+			
+			<!-- Map Controls - Ultra compact mobile labels -->
+			<div class="flex flex-nowrap overflow-x-auto gap-2 justify-start sm:justify-center mb-4 pb-2 -mx-2 px-2">
+				<button onclick="showAllAlumni()" class="gradient-btn px-3 py-2 rounded-lg transition duration-300 text-xs sm:text-base whitespace-nowrap flex-shrink-0">
+					<span class="hidden sm:inline">Show All</span>
+					<span class="sm:hidden">ALL</span>
+				</button>
+				<button onclick="showBangladeshAlumni()" class="gradient-btn-blue px-3 py-2 rounded-lg transition duration-300 text-xs sm:text-base whitespace-nowrap flex-shrink-0">
+					<span class="hidden sm:inline">Bangladesh Only</span>
+					<span class="sm:hidden">BD</span>
+				</button>
+				<button onclick="showInternationalAlumni()" class="gradient-btn-orange px-3 py-2 rounded-lg transition duration-300 text-xs sm:text-base whitespace-nowrap flex-shrink-0">
+					<span class="hidden sm:inline">International Only</span>
+					<span class="sm:hidden">INT</span>
+				</button>
+				<button onclick="refreshAlumniData()" class="gradient-btn-green px-3 py-2 rounded-lg transition duration-300 text-xs sm:text-base whitespace-nowrap flex-shrink-0">
+					<i class="fas fa-sync-alt"></i>
+					<span class="hidden sm:inline ml-2">Refresh Data</span>
+				</button>
+			</div>
+			
+			<!-- Loading Spinner -->
+			<div id="map-loading" class="text-center py-6 sm:py-8">
+				<div class="loading-spinner"></div>
+				<p class="text-gray-600 mt-3 sm:mt-4 text-sm sm:text-base">Loading alumni map...</p>
+			</div>
+			
+			<!-- Leaflet Map Container - Responsive height -->
+			<div id="alumni-map" class="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-md overflow-hidden hidden">
+				<!-- Map will be loaded here -->
+			</div>
+			
+			<p class="text-center text-xs sm:text-sm text-gray-500 mt-3 sm:mt-4" id="map-count">
+				Loading alumni locations...
+			</p>
+		</div>
+	</section>
 	
 	<!-- Member Statistics Section -->
-<section>
-    <div class="bg-gradient-to-br from-slate-50 to-blue-50 shadow-lg rounded-lg p-6 border border-gray-100">
-        <h2 class="text-3xl font-bold text-slate-800 mb-6 text-center">Alumni Statistics</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl p-4 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div class="text-2xl font-bold mb-1"><i class="fas fa-user-graduate mr-2"></i><span id="total-graduates">350+</span></div>
-                <div class="text-xs opacity-90">Total Graduates</div>
-            </div>
-            <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-4 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div class="text-2xl font-bold mb-1"><i class="fas fa-users mr-2"></i><span id="registered-alumni">0</span></div>
-                <div class="text-xs opacity-90">Registered Alumni</div>
-            </div>
-            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-4 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div class="text-2xl font-bold mb-1"><i class="fas fa-briefcase mr-2"></i><span id="working-professionals">0</span></div>
-                <div class="text-xs opacity-90">Working Professionals</div>
-            </div>
-            <div class="bg-gradient-to-br from-rose-500 to-pink-600 rounded-xl p-4 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div class="text-2xl font-bold mb-1"><i class="fas fa-globe-americas mr-2"></i><span id="abroad-members">0</span></div>
-                <div class="text-xs opacity-90">Members Abroad</div>
-            </div>
-        </div>
-    </div>
-</section>
+	<section>
+		<div class="bg-gradient-to-br from-slate-50 to-blue-50 shadow-lg rounded-lg p-6 border border-gray-100">
+			<h2 class="text-3xl font-bold text-slate-800 mb-6 text-center">Alumni Statistics</h2>
+			<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+				<div class="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl p-4 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+					<div class="text-2xl font-bold mb-1"><i class="fas fa-user-graduate mr-2"></i><span id="total-graduates">350+</span></div>
+					<div class="text-xs opacity-90">Total Graduates</div>
+				</div>
+				<div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-4 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+					<div class="text-2xl font-bold mb-1"><i class="fas fa-users mr-2"></i><span id="registered-alumni">0</span></div>
+					<div class="text-xs opacity-90">Registered Alumni</div>
+				</div>
+				<div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-4 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+					<div class="text-2xl font-bold mb-1"><i class="fas fa-briefcase mr-2"></i><span id="working-professionals">0</span></div>
+					<div class="text-xs opacity-90">Working Professionals</div>
+				</div>
+				<div class="bg-gradient-to-br from-rose-500 to-pink-600 rounded-xl p-4 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
+					<div class="text-2xl font-bold mb-1"><i class="fas fa-globe-americas mr-2"></i><span id="abroad-members">0</span></div>
+					<div class="text-xs opacity-90">Members Abroad</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
 <!-- News & Activities Section -->
 <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -875,7 +876,6 @@
 </body>
 
 </html>
-
 
 
 
