@@ -141,8 +141,8 @@
     </div>
     <nav class="nav bg-white shadow-sm sticky top-0 z-50">
         <div class="nav-container max-w-7xl mx-auto flex justify-start items-center space-x-2 sm:space-x-4 p-4 overflow-x-auto whitespace-nowrap">
-            <a href="index.html" class="nav-tab text-purple-600 font-bold border-b-2 border-purple-600 px-3 py-2 rounded-md text-sm sm:text-base">Home</a>
-            <a href="membership-form.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Become a Member</a>
+            <a href="index.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Home</a>
+            <a href="membership-form.html" class="nav-tab text-purple-600 font-bold border-b-2 border-purple-600 px-3 py-2 rounded-md text-sm sm:text-base">Become a Member</a>
             <a href="members.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Current Members</a>
             <a href="committee.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Committee</a>
             <a href="alumni-news.html" class="nav-tab text-gray-600 hover:text-purple-600 transition duration-300 px-3 py-2 rounded-md text-sm sm:text-base font-medium">Alumni News</a>
@@ -162,31 +162,33 @@
             <h1 class="text-3xl font-bold text-purple-800 mb-2 text-center">Join Our Alumni Network</h1>
             <p class="text-gray-600 text-center mb-8">Reconnect with peers and stay updated with our community.</p>
 
-            <!-- Step Indicators -->
-            <div class="flex items-center justify-center mb-10">
-                <div class="flex flex-col items-center">
-                    <div id="step-indicator-1" class="step-indicator w-10 h-10 flex items-center justify-center rounded-full font-bold text-lg">1</div>
-                    <p class="text-xs mt-2 font-medium">Personal</p>
-                </div>
-                <div class="flex-auto border-t-2 border-gray-200 mx-4"></div>
-                <div class="flex flex-col items-center">
-                    <div id="step-indicator-2" class="step-indicator w-10 h-10 flex items-center justify-center rounded-full font-bold text-lg">2</div>
-                    <p class="text-xs mt-2 font-medium">Institutional</p>
-                </div>
-                <div class="flex-auto border-t-2 border-gray-200 mx-4"></div>
-                <div class="flex flex-col items-center">
-                    <div id="step-indicator-3" class="step-indicator w-10 h-10 flex items-center justify-center rounded-full font-bold text-lg">3</div>
-                    <p class="text-xs mt-2 font-medium">Professional</p>
-                </div>
-                 <div class="flex-auto border-t-2 border-gray-200 mx-4"></div>
-                 <div class="flex flex-col items-center">
-                    <div id="step-indicator-4" class="step-indicator w-10 h-10 flex items-center justify-center rounded-full font-bold text-lg">4</div>
-                    <p class="text-xs mt-2 font-medium">Mailing</p>
-                </div>
-                 <div class="flex-auto border-t-2 border-gray-200 mx-4"></div>
-                 <div class="flex flex-col items-center">
-                    <div id="step-indicator-5" class="step-indicator w-10 h-10 flex items-center justify-center rounded-full font-bold text-lg">5</div>
-                    <p class="text-xs mt-2 font-medium">Submit</p>
+            <!-- Step Indicators - Mobile Friendly -->
+            <div class="flex items-center justify-center mb-8 sm:mb-10 overflow-x-auto w-full">
+                <div class="flex items-center min-w-max px-2 sm:px-0">
+                    <div class="flex flex-col items-center mx-1 sm:mx-2">
+                        <div id="step-indicator-1" class="step-indicator w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full font-bold text-sm sm:text-lg">1</div>
+                        <p class="text-xs mt-1 sm:mt-2 font-medium text-center">Personal</p>
+                    </div>
+                    <div class="flex-auto border-t-2 border-gray-200 mx-1 sm:mx-2 w-4 sm:w-8"></div>
+                    <div class="flex flex-col items-center mx-1 sm:mx-2">
+                        <div id="step-indicator-2" class="step-indicator w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full font-bold text-sm sm:text-lg">2</div>
+                        <p class="text-xs mt-1 sm:mt-2 font-medium text-center">Institutional</p>
+                    </div>
+                    <div class="flex-auto border-t-2 border-gray-200 mx-1 sm:mx-2 w-4 sm:w-8"></div>
+                    <div class="flex flex-col items-center mx-1 sm:mx-2">
+                        <div id="step-indicator-3" class="step-indicator w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full font-bold text-sm sm:text-lg">3</div>
+                        <p class="text-xs mt-1 sm:mt-2 font-medium text-center">Professional</p>
+                    </div>
+                    <div class="flex-auto border-t-2 border-gray-200 mx-1 sm:mx-2 w-4 sm:w-8"></div>
+                    <div class="flex flex-col items-center mx-1 sm:mx-2">
+                        <div id="step-indicator-4" class="step-indicator w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full font-bold text-sm sm:text-lg">4</div>
+                        <p class="text-xs mt-1 sm:mt-2 font-medium text-center">Mailing</p>
+                    </div>
+                    <div class="flex-auto border-t-2 border-gray-200 mx-1 sm:mx-2 w-4 sm:w-8"></div>
+                    <div class="flex flex-col items-center mx-1 sm:mx-2">
+                        <div id="step-indicator-5" class="step-indicator w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full font-bold text-sm sm:text-lg">5</div>
+                        <p class="text-xs mt-1 sm:mt-2 font-medium text-center">Submit</p>
+                    </div>
                 </div>
             </div>
 
@@ -411,11 +413,10 @@
                       <div class="mt-4 bg-gray-100 p-4 rounded-lg border border-gray-200">
                         <label class="flex items-start">
                             <input type="checkbox" id="consent" class="mt-1 h-5 w-5 text-purple-600 rounded focus:ring-purple-500" required>
-                            <span id="consent-text" class="ml-3 text-sm text-gray-700">“I hereby declare that the information provided is accurate and I agree to be a member of the Alumni Association. I also agree that my personal information may be used and shared for the purpose of serving the Alumni Association and its activities.” <span class="text-red-500">*</span></span>
+                            <span id="consent-text" class="ml-3 text-sm text-gray-700">"I hereby declare that the information provided is accurate and I agree to be a member of the Alumni Association. I also agree that my personal information may be used and shared for the purpose of serving the Alumni Association and its activities." <span class="text-red-500">*</span></span>
                         </label>
                     </div>
                 </div>
-
 
                 <!-- Navigation Buttons -->
                 <div class="pt-5 flex justify-between">
@@ -545,21 +546,32 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     const validateStep = (stepIndex) => {
+        // Special case for Donor members - skip institutional info validation
         if (membershipTypeSelect.value === 'Donor' && stepIndex === 1) {
             return true;
         }
+        
+        // Special case for job preparation - skip professional fields validation
         if (jobPreparationCheckbox.checked && stepIndex === 2) {
-             professionalFieldsToToggle.forEach(f => f.classList.remove('border-red-500'));
-             return true;
+            professionalFieldsToToggle.forEach(f => f.classList.remove('border-red-500'));
+            return true;
         }
+        
         const currentStepDiv = steps[stepIndex];
         const inputs = currentStepDiv.querySelectorAll('input[required], select[required]');
         let isValid = true;
+        
         for (const input of inputs) {
             if (input.disabled) {
                 input.classList.remove('border-red-500');
                 continue;
             }
+            
+            // Skip validation for Donor members on institutional step
+            if (membershipTypeSelect.value === 'Donor' && input.closest('#step-2')) {
+                continue;
+            }
+            
             if (!input.checkValidity()) {
                 input.classList.add('border-red-500');
                 if (input.type === 'checkbox') {
@@ -568,10 +580,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     input.reportValidity();
                 }
                 isValid = false;
-                 break;
+                break;
             } else {
                 input.classList.remove('border-red-500');
-                 if (input.type === 'checkbox') {
+                if (input.type === 'checkbox') {
                     document.getElementById('consent-text').classList.remove('text-red-600', 'font-bold');
                 }
             }
@@ -584,11 +596,11 @@ document.addEventListener('DOMContentLoaded', function () {
     
     toggleProfessionalFields(jobPreparationCheckbox.checked);
 
-
     nextBtn.addEventListener('click', () => {
         if (validateStep(currentStep)) {
             if (currentStep < steps.length - 1) {
                 if (currentStep === 0 && membershipTypeSelect.value === 'Donor') {
+                    // For Donor members, skip step 2 (institutional) and go to step 3
                     currentStep = 2;
                 } else {
                     currentStep++;
@@ -601,6 +613,7 @@ document.addEventListener('DOMContentLoaded', function () {
     prevBtn.addEventListener('click', () => {
         if (currentStep > 0) {
             if (currentStep === 2 && membershipTypeSelect.value === 'Donor') {
+                // For Donor members, go back from step 3 to step 1
                 currentStep = 0;
             } else {
                 currentStep--;
@@ -653,7 +666,37 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', function (event) {
         event.preventDefault();
         
-        if (!validateStep(currentStep)) return;
+        console.log('Submit clicked - Membership Type:', membershipTypeSelect.value);
+        console.log('Current Step:', currentStep);
+        
+        // Special validation for Donor members - skip institutional step validation
+        if (membershipTypeSelect.value === 'Donor') {
+            console.log('Donor member detected - skipping institutional validation');
+            // Clear any validation errors from institutional step
+            const step2Inputs = document.getElementById('step-2').querySelectorAll('input[required], select[required]');
+            step2Inputs.forEach(input => {
+                input.classList.remove('border-red-500');
+                console.log('Cleared validation for:', input.id);
+            });
+        }
+        
+        // Check consent checkbox
+        const consentCheckbox = document.getElementById('consent');
+        console.log('Consent checkbox checked:', consentCheckbox.checked);
+        
+        if (!consentCheckbox.checked) {
+            console.log('Consent not checked - showing error');
+            document.getElementById('consent-text').classList.add('text-red-600', 'font-bold');
+            consentCheckbox.focus();
+            return;
+        }
+        
+        if (!validateStep(currentStep)) {
+            console.log('Step validation failed');
+            return;
+        }
+        
+        console.log('All validations passed - proceeding with submission');
         
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
@@ -664,6 +707,7 @@ document.addEventListener('DOMContentLoaded', function () {
         
         if (!alumniData.pendingMembers) alumniData.pendingMembers = [];
 
+        // Create member data object - handle Donor members differently
         const newMember = {
             id: Date.now(),
             membershipType: membershipTypeSelect.value,
@@ -675,7 +719,15 @@ document.addEventListener('DOMContentLoaded', function () {
             email: document.getElementById('email').value,
             phone: `${document.getElementById('countryCode').value}${document.getElementById('phone').value}`,
             bloodGroup: document.getElementById('bloodGroup').value,
-            institutionalInfo: {
+            // Institutional info - only include if not Donor
+            institutionalInfo: membershipTypeSelect.value === 'Donor' ? {
+                season: 'N/A',
+                batch: 'N/A', 
+                studentId: 'N/A',
+                passingYear: 'N/A',
+                degree: 'N/A',
+                supervisor: 'N/A'
+            } : {
                 season: document.getElementById('season').value,
                 batch: document.getElementById('batch').value,
                 studentId: `PH${document.getElementById('studentId').value}`,
@@ -707,19 +759,25 @@ document.addEventListener('DOMContentLoaded', function () {
             photoUrl: photoDataUrl
         };
 
+        console.log('Member data prepared:', newMember);
+
         // Save to localStorage first
         alumniData.pendingMembers.push(newMember);
         localStorage.setItem('alumniData', JSON.stringify(alumniData));
+        console.log('Data saved to localStorage');
 
         // Then, send the email
         if (WEB_APP_URL && WEB_APP_URL !== " ") {
+            console.log('Sending data to web app...');
             fetch(WEB_APP_URL, {
                 method: 'POST',
                 body: JSON.stringify(newMember)
+            }).then(response => {
+                console.log('Web app response:', response);
+                showSuccessModal(newMember);
             }).catch(err => {
                 console.error("Error sending email request:", err);
-            }).finally(() => {
-                 showSuccessModal(newMember);
+                showSuccessModal(newMember); // Still show success even if email fails
             });
         } else {
             console.warn("WEB_APP_URL is not set. Email will not be sent.");
@@ -731,15 +789,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
