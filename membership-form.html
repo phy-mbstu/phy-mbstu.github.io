@@ -286,7 +286,7 @@
                                 <input type="text" id="passingYear" placeholder="2016" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
                             </div>
                             <div class="md:col-span-2">
-                                <label for="degree" class="block text-sm font-medium text-gray-700">Degree Obtained <span class="text-red-500">*</span></label>
+                                <label for="degree" class="block text-sm font-medium text-gray-700">Degree (Last@MBSTU) <span class="text-red-500">*</span></label>
                                 <select id="degree" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
                                     <option>BSc</option>
                                     <option>MSc</option>
@@ -333,18 +333,25 @@
                                 <label for="workCountry" class="block text-sm font-medium text-gray-700">Work Place (Country) <span id="workCountry-req" class="text-red-500 hidden">*</span></label>
                                 <input type="text" id="workCountry" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
                             </div>
+							<div>
+							    <label for="lastDegree" class="block text-sm font-medium text-gray-700">Additional Degree/Diploma (Optional)</label>
+							    <select id="lastDegree" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+							        <option value="" selected>None</option>
+							        <option value="MSc">MSc</option>
+							        <option value="MPhil">MPhil</option>
+							        <option value="PhD">PhD</option>
+							        <option value="Others">Others</option>
+							    </select>
+							</div>
+							
+							<!-- Other Degree Input (Hidden by default) -->
+							<div id="otherDegreeContainer" class="hidden mt-2">
+							    <label for="otherDegree" class="block text-sm font-medium text-gray-700">Specify Other Degree</label>
+							    <input type="text" id="otherDegree" placeholder="Enter your degree name" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+							</div>
                              <div>
-                                <label for="lastDegree" class="block text-sm font-medium text-gray-700">Last Degree (Optional)</label>
-                                <select id="lastDegree" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
-									<option value="" selected>None</option>
-                                    <option value="MSc">MSc</option>
-                                    <option value="MPhil">MPhil</option>
-                                    <option value="PhD">PhD</option>
-                                </select>
-                            </div>
-                             <div>
-                                <label for="university" class="block text-sm font-medium text-gray-700">University</label>
-                                <input type="text" id="university" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                                <label for="university" class="block text-sm font-medium text-gray-700">University/Institute</label>
+                                <input type="text" placeholder="UCL, ETHZ" id="university" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
                             </div>
                             <div class="md:col-span-2">
                                 <label for="linkedin" class="block text-sm font-medium text-gray-700">LinkedIn Profile URL</label>
@@ -369,7 +376,7 @@
                 <!-- Step 4: Mailing Address -->
                 <div id="step-4" class="hidden space-y-6">
                     <div class="border-b border-gray-200 pb-6">
-                        <h2 class="text-xl font-semibold text-gray-700 mb-4">STEP 4: Mailing Address</h2>
+                        <h2 class="text-xl font-semibold text-gray-700 mb-4">STEP 4: Permanent Address </h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="division" class="block text-sm font-medium text-gray-700">Division <span class="text-red-500">*</span></label>
@@ -789,3 +796,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </body>
 </html>
+
