@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MBSTU Physics Alumni Association</title>
+<title>MBSTU Physics Alumni Association - Activities</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     body { font-family: 'Inter', sans-serif; }
@@ -16,28 +14,6 @@
         scrollbar-width: none;
     }
     .nav-container::-webkit-scrollbar { display: none; }
-    
-    /* Map styles */
-    #alumni-map {
-        border-radius: 0.5rem;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Custom marker styles */
-    .custom-marker {
-        background: white;
-        border: 3px solid;
-        border-radius: 50%;
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        overflow: hidden;
-    }
-    
-    .marker-blue { border-color: #3b82f6; }
     
     /* Loading spinner */
     .loading-spinner {
@@ -54,26 +30,7 @@
         100% { transform: rotate(360deg); }
     }
     
-    /* Professional gradient backgrounds for cards */
-    .card-gradient-1 { background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); }
-    .card-gradient-2 { background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%); }
-    .card-gradient-3 { background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); }
-    .card-gradient-4 { background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%); }
-    .card-gradient-5 { background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%); }
-    .card-gradient-6 { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); }
-    
     /* Gradient buttons */
-    .gradient-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        transition: all 0.3s ease;
-    }
-    .gradient-btn:hover {
-        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-    
     .gradient-btn-blue {
         background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
         color: white;
@@ -85,36 +42,40 @@
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
     
-    .gradient-btn-orange {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        color: white;
-        transition: all 0.3s ease;
-    }
-    .gradient-btn-orange:hover {
-        background: linear-gradient(135deg, #eab308 0%, #b45309 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    /* Activity-specific styles */
+    .activity-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     
-    .gradient-btn-green {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    .activity-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .activity-date {
+        background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
         color: white;
-        transition: all 0.3s ease;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
+        text-align: center;
+        min-width: 80px;
     }
-    .gradient-btn-green:hover {
-        background: linear-gradient(135deg, #0d9669 0%, #047857 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    
+    .activity-category {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
-    .news-image-container {
-    height: 12rem;
-    overflow: hidden;
-}
-.news-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+    
+    .category-academic { background-color: #dbeafe; color: #1e40af; }
+    .category-social { background-color: #fce7f3; color: #be185d; }
+    .category-career { background-color: #dcfce7; color: #166534; }
+    .category-sports { background-color: #fef3c7; color: #92400e; }
+    .category-community { background-color: #e0e7ff; color: #3730a3; }
 </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -125,7 +86,7 @@
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center sm:justify-between">
             <!-- Logo and Title Container -->
             <div class="flex items-center space-x-4 mb-4 sm:mb-0">
-                <!-- Logo Container - Increased size -->
+                <!-- Logo Container -->
                 <div class="logo-container w-24 h-24 bg-white rounded-full p-1 shadow-lg flex items-center justify-center">
                     <img src="assets/logo.png" alt="MBSTU Physics Alumni Association Logo" 
                          class="w-full h-full object-contain"
@@ -164,12 +125,33 @@
 
 <!-- Main Content -->
 <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
-    <h1 class="text-3xl font-bold text-purple-800 mb-8 text-center">Alumni News</h1>
-    <div id="content-container" class="space-y-8">
-        <!-- News items will be dynamically inserted here -->
+    <h1 class="text-3xl font-bold text-purple-800 mb-8 text-center">Alumni Activities</h1>
+    
+    <!-- Activities Filter -->
+    <div class="bg-white rounded-lg shadow p-4 mb-6">
+        <div class="flex flex-wrap gap-4 justify-center">
+            <button id="filter-all" class="filter-btn gradient-btn-blue px-4 py-2 rounded-lg font-medium" data-filter="all">All Activities</button>
+            <button id="filter-academic" class="filter-btn bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg font-medium transition-colors" data-filter="academic">Academic</button>
+            <button id="filter-social" class="filter-btn bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg font-medium transition-colors" data-filter="social">Social</button>
+            <button id="filter-career" class="filter-btn bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg font-medium transition-colors" data-filter="career">Career</button>
+            <button id="filter-sports" class="filter-btn bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg font-medium transition-colors" data-filter="sports">Sports</button>
+            <button id="filter-community" class="filter-btn bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg font-medium transition-colors" data-filter="community">Community</button>
+        </div>
     </div>
+    
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-spinner"></div>
+    
+    <div id="content-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Activities will be dynamically inserted here -->
+    </div>
+    
     <div id="no-content-message" class="hidden">
-        <p class="text-center text-gray-500 mt-12 text-lg">There is no news at the moment.</p>
+        <div class="text-center py-12">
+            <i class="fas fa-calendar-check text-6xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500 text-lg">No activities found at the moment.</p>
+            <p class="text-gray-400 mt-2">Check back later for updates!</p>
+        </div>
     </div>
 </div>
 
@@ -182,84 +164,169 @@
 document.addEventListener('DOMContentLoaded', function () {
     const contentContainer = document.getElementById('content-container');
     const noContentMessage = document.getElementById('no-content-message');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const filterButtons = document.querySelectorAll('.filter-btn');
 
-    async function loadNewsFromFile() {
+    // Function to load activities from activites.txt file
+    async function loadActivitiesFromFile() {
         try {
+            loadingSpinner.classList.remove('hidden');
             const response = await fetch('assets/activites.txt');
+            
+            if (!response.ok) {
+                throw new Error('Failed to load activities');
+            }
+            
             const text = await response.text();
-            const newsItems = parseNewsText(text);
-            renderContent(newsItems);
+            const activities = parseActivitiesText(text);
+            renderActivities(activities);
+            
+            // Set up filter buttons
+            setupFilterButtons(activities);
+            
         } catch (error) {
-            console.error('Error loading news:', error);
+            console.error('Error loading activities:', error);
             noContentMessage.classList.remove('hidden');
+            loadingSpinner.classList.add('hidden');
         }
     }
 
-    function parseNewsText(text) {
-        const newsItems = [];
+    // Parse the activites.txt file content
+    function parseActivitiesText(text) {
+        const activities = [];
         const sections = text.split('---').filter(section => section.trim());
         
         sections.forEach((section, index) => {
             const lines = section.split('\n').filter(line => line.trim());
-            const newsItem = { id: index + 1 };
+            const activity = { id: index + 1 };
             
             lines.forEach(line => {
                 const [key, ...valueParts] = line.split(':');
                 const value = valueParts.join(':').trim();
                 
                 if (key.toLowerCase().trim() === 'title') {
-                    newsItem.title = value;
+                    activity.title = value;
                 } else if (key.toLowerCase().trim() === 'description') {
-                    newsItem.content = value;
+                    activity.description = value;
+                } else if (key.toLowerCase().trim() === 'date') {
+                    activity.date = value;
+                } else if (key.toLowerCase().trim() === 'category') {
+                    activity.category = value.toLowerCase();
                 } else if (key.toLowerCase().trim() === 'photo') {
-                    newsItem.imageUrl = `assets/images/${value}`;
+                    activity.imageUrl = `assets/images/${value}`;
+                } else if (key.toLowerCase().trim() === 'location') {
+                    activity.location = value;
                 }
             });
             
-            if (newsItem.title && newsItem.content) {
-                newsItems.push(newsItem);
+            if (activity.title && activity.description) {
+                activities.push(activity);
             }
         });
         
-        return newsItems;
+        return activities;
     }
 
-    function renderContent(newsItems) {
-    contentContainer.innerHTML = '';
-    
-    if (newsItems.length === 0) {
-        noContentMessage.classList.remove('hidden');
-    } else {
-        noContentMessage.classList.add('hidden');
-        newsItems.forEach(item => {
-            const itemCard = `
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                    ${item.imageUrl ? `
-                        <div class="w-full h-48 overflow-hidden bg-gray-100 flex items-center justify-center">
-                            <img src="${item.imageUrl}" alt="${item.title}" 
-                                 class="max-w-full max-h-full object-contain">
+    // Get category class for styling
+    function getCategoryClass(category) {
+        const categoryMap = {
+            'academic': 'category-academic',
+            'social': 'category-social',
+            'career': 'category-career',
+            'sports': 'category-sports',
+            'community': 'category-community'
+        };
+        return categoryMap[category] || 'category-academic';
+    }
+
+    // Render activities to the page
+    function renderActivities(activities, filter = 'all') {
+        contentContainer.innerHTML = '';
+        loadingSpinner.classList.add('hidden');
+        
+        let filteredActivities = activities;
+        
+        if (filter !== 'all') {
+            filteredActivities = activities.filter(activity => activity.category === filter);
+        }
+        
+        if (filteredActivities.length === 0) {
+            noContentMessage.classList.remove('hidden');
+        } else {
+            noContentMessage.classList.add('hidden');
+            filteredActivities.forEach(activity => {
+                const activityCard = `
+                    <div class="activity-card bg-white rounded-lg shadow-lg overflow-hidden">
+                        ${activity.imageUrl ? `
+                            <div class="w-full h-48 overflow-hidden bg-gray-100 flex items-center justify-center">
+                                <img src="${activity.imageUrl}" alt="${activity.title}" 
+                                     class="max-w-full max-h-full object-cover"
+                                     onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'text-gray-400 text-5xl\\'><i class=\\'fas fa-running\\'></i></div>';">
+                            </div>
+                        ` : `
+                            <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
+                                <div class="text-gray-400 text-5xl">
+                                    <i class="fas fa-running"></i>
+                                </div>
+                            </div>
+                        `}
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-xl font-bold text-gray-800 flex-1">${activity.title}</h3>
+                                ${activity.date ? `
+                                <div class="activity-date ml-4">
+                                    <div class="text-sm font-semibold">${new Date(activity.date).toLocaleDateString('en-US', { month: 'short' })}</div>
+                                    <div class="text-lg font-bold">${new Date(activity.date).getDate()}</div>
+                                    <div class="text-xs">${new Date(activity.date).getFullYear()}</div>
+                                </div>
+                                ` : ''}
+                            </div>
+                            ${activity.category ? `
+                            <div class="mb-3">
+                                <span class="activity-category ${getCategoryClass(activity.category)}">${activity.category}</span>
+                            </div>
+                            ` : ''}
+                            ${activity.location ? `
+                            <div class="flex items-center text-gray-600 mb-4">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                <span>${activity.location}</span>
+                            </div>
+                            ` : ''}
+                            <p class="text-gray-600 mb-4">${activity.description}</p>
+                            <button class="gradient-btn-blue w-full px-4 py-2 rounded-lg text-sm font-medium">
+                                View Details
+                            </button>
                         </div>
-                    ` : ''}
-                    <div class="p-6">
-                        <h3 class="text-2xl font-bold text-gray-800">${item.title}</h3>
-                        <p class="text-gray-600 mt-4">${item.content}</p>
                     </div>
-                </div>
-            `;
-            contentContainer.innerHTML += itemCard;
+                `;
+                contentContainer.innerHTML += activityCard;
+            });
+        }
+    }
+
+    // Set up filter buttons functionality
+    function setupFilterButtons(activities) {
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active button styling
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('gradient-btn-blue');
+                    btn.classList.add('bg-gray-200', 'hover:bg-gray-300');
+                });
+                
+                this.classList.remove('bg-gray-200', 'hover:bg-gray-300');
+                this.classList.add('gradient-btn-blue');
+                
+                // Filter activities
+                renderActivities(activities, this.dataset.filter);
+            });
         });
     }
-}
 
-    loadNewsFromFile();
+    // Initialize the page
+    loadActivitiesFromFile();
 });
 </script>
 
 </body>
-
 </html>
-
-
-
-
-
