@@ -456,7 +456,7 @@
     const CACHE_KEY = 'alumni_map_cache';
     const CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours
 
-    let map, markers = [], allAlumniData = [], geocodingCache = {};
+    let map, markers = [], allAlumniData = [];
 
     // Bangladesh bounds
     const bangladeshBounds = [[20.5, 88.0], [26.5, 92.5]];
@@ -647,7 +647,7 @@
     function convertToThumbnailUrl(url) {
         const fileId = extractFileId(url);
         if (fileId) {
-            return `https://drive.google.com/thumbnail?id=${fileId}&sz=1000`;
+            return `https://drive.google.com/thumbnail?id=${fileId}&sz=100`;
         }
         return url;
     }
@@ -714,58 +714,53 @@
             });
     }
 
-	function fetchAlumniStats() {
-	    return new Promise((resolve, reject) => {
-	        const oldScript = document.getElementById('stats-jsonp-script');
-	        if (oldScript) oldScript.remove();
-	        
-	        window.handleAlumniStats = function(data) {
-	            if (data.error) {
-	                reject(new Error(data.error));
-	                return;
-	            }
-	            
-	            const approvedMembers = data.approved || [];
-	            const registeredAlumni = approvedMembers.length;
-	            
-	            // Debug: Check what roles we have
-	            const roles = approvedMembers.map(m => m.role).filter(r => r);
-	            console.log('Found roles:', roles);
-	            
-	            // SIMPLE: Has paid job if role field is not empty
-	            const workingProfessionals = approvedMembers.filter(member => {
-	                const role = (member.role || '').trim();
-	                return role !== ''; // Not empty = has paid job
-	            }).length;
-	            
-	            console.log(`Working professionals: ${workingProfessionals} out of ${registeredAlumni}`);
-	            
-	            // Better abroad members detection
-	            const abroadMembers = approvedMembers.filter(member => {
-	                const country = (member.workCountry || '').toLowerCase().trim();
-	                return country && 
-	                       country !== 'bangladesh' && 
-	                       country !== 'bd' && 
-	                       country !== '' && 
-	                       country !== 'n/a';
-	            }).length;
-	            
-	            resolve({
-	                registeredAlumni,
-	                workingProfessionals,
-	                abroadMembers
-	            });
-	        };
-	        
-	        const script = document.createElement('script');
-	        script.id = 'stats-jsonp-script';
-	        script.src = SCRIPT_URL + '?callback=handleAlumniStats';
-	        script.onerror = () => reject(new Error('Failed to load stats from server'));
-	        document.head.appendChild(script);
-	    });
-	}
+    function fetchAlumniStats() {
+        return new Promise((resolve, reject) => {
+            const oldScript = document.getElementById('stats-jsonp-script');
+            if (oldScript) oldScript.remove();
+            
+            window.handleAlumniStats = function(data) {
+                if (data.error) {
+                    reject(new Error(data.error));
+                    return;
+                }
+                
+                const approvedMembers = data.approved || [];
+                const registeredAlumni = approvedMembers.length;
+                
+                // Count working professionals - anyone with a role or company
+                const workingProfessionals = approvedMembers.filter(member => {
+                    const hasRole = (member.role || '').trim() !== '';
+                    const hasCompany = (member.company || '').trim() !== '';
+                    return hasRole || hasCompany;
+                }).length;
+                
+                // Count abroad members - anyone with workCountry not Bangladesh
+                const abroadMembers = approvedMembers.filter(member => {
+                    const country = (member.workCountry || '').toLowerCase().trim();
+                    return country && 
+                           country !== 'bangladesh' && 
+                           country !== 'bd' && 
+                           country !== '' && 
+                           country !== 'n/a';
+                }).length;
+                
+                resolve({
+                    registeredAlumni,
+                    workingProfessionals,
+                    abroadMembers
+                });
+            };
+            
+            const script = document.createElement('script');
+            script.id = 'stats-jsonp-script';
+            script.src = SCRIPT_URL + '?callback=handleAlumniStats';
+            script.onerror = () => reject(new Error('Failed to load stats from server'));
+            document.head.appendChild(script);
+        });
+    }
 
-    // --- MAP FUNCTIONS ---
+    // --- OPTIMIZED MAP FUNCTIONS ---
     function initMap() {
         // Show loading
         document.getElementById('map-loading').classList.remove('hidden');
@@ -776,7 +771,6 @@
         if (cached) {
             console.log('Using cached data');
             allAlumniData = cached.data;
-            geocodingCache = cached.geocodingCache;
             initializeLeafletMap();
         } else {
             loadAlumniData();
@@ -786,7 +780,6 @@
     function refreshAlumniData() {
         // Clear cache and reload data
         localStorage.removeItem(CACHE_KEY);
-        geocodingCache = {};
         allAlumniData = [];
         
         // Show loading
@@ -827,11 +820,10 @@
         }
     }
 
-    function saveToCache(data, geocodingCache) {
+    function saveToCache(data) {
         try {
             const cacheData = {
                 data: data,
-                geocodingCache: geocodingCache,
                 timestamp: Date.now()
             };
             localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
@@ -849,12 +841,13 @@
         window.handleAlumniData = function(data) {
             if (data.error) {
                 console.error('Error:', data.error);
-                loadSampleData();
+                document.getElementById('map-count').textContent = 'Error loading data';
                 return;
             }
+            
             console.log('Live data received:', data);
             allAlumniData = data.approved || [];
-            document.getElementById('map-count').textContent = `Processing ${allAlumniData.length} alumni locations...`;
+            document.getElementById('map-count').textContent = `Processing ${allAlumniData.length} alumni...`;
             processAlumniLocations();
         };
         
@@ -863,32 +856,40 @@
         script.src = SCRIPT_URL + '?callback=handleAlumniData';
         script.onerror = () => {
             console.error('Failed to load live data');
-            loadSampleData();
+            document.getElementById('map-count').textContent = 'Failed to load data';
         };
         document.head.appendChild(script);
     }
 
-    async function processAlumniLocations() {
-        for (const member of allAlumniData) {
+    function processAlumniLocations() {
+        // Process each member's coordinates directly from the data - INSTANTLY
+        allAlumniData.forEach(member => {
             try {
-                const locationQuery = getLocationQuery(member);
-                if (locationQuery) {
-                    const coordinates = await geocodeLocation(locationQuery);
-                    member.coordinates = coordinates;
-                    member.locationQuery = locationQuery;
+                // Use the actual latitude and longitude from columns 42 and 43
+                const latitude = parseFloat(member.latitude);
+                const longitude = parseFloat(member.longitude);
+                
+                if (!isNaN(latitude) && !isNaN(longitude) && latitude !== 0 && longitude !== 0) {
+                    // Valid coordinates found in the spreadsheet
+                    member.coordinates = [latitude, longitude];
+                    member.hasExactCoordinates = true;
                 } else {
+                    // Fallback to MBSTU coordinates if no valid coordinates
                     member.coordinates = [24.2513, 89.9167];
-                    member.locationQuery = 'MBSTU, Tangail';
+                    member.hasExactCoordinates = false;
                 }
-                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                // Set location query for display
+                member.locationQuery = getLocationQuery(member) || 'Location not specified';
             } catch (error) {
                 console.error(`Error processing ${member.name}:`, error);
                 member.coordinates = [24.2513, 89.9167];
                 member.locationQuery = 'MBSTU, Tangail';
+                member.hasExactCoordinates = false;
             }
-        }
+        });
         
-        saveToCache(allAlumniData, geocodingCache);
+        saveToCache(allAlumniData);
         initializeLeafletMap();
     }
 
@@ -899,40 +900,6 @@
         if (member.district) return `${member.district}, Bangladesh`;
         if (member.workCountry) return member.workCountry;
         return null;
-    }
-
-    async function geocodeLocation(query) {
-        if (geocodingCache[query]) {
-            return geocodingCache[query];
-        }
-        
-        try {
-            const response = await fetch(
-                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`
-            );
-            const data = await response.json();
-            if (data && data.length > 0) {
-                const coords = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-                geocodingCache[query] = coords;
-                return coords;
-            }
-        } catch (error) {
-            console.warn(`Geocoding failed for "${query}"`);
-        }
-        
-        // Fallback coordinates
-        const hash = query.split('').reduce((a, b) => {
-            a = ((a << 5) - a) + b.charCodeAt(0);
-            return a & a;
-        }, 0);
-        
-        const coords = [
-            24.2513 + (hash % 100) / 1000 - 0.05,
-            89.9167 + ((hash * 7) % 100) / 1000 - 0.05
-        ];
-        
-        geocodingCache[query] = coords;
-        return coords;
     }
 
     function initializeLeafletMap() {
@@ -968,34 +935,37 @@
         renderAllMarkers();
     }
 
-	function createCustomIcon(memberName, photoUrl) {
-	    const processedPhotoUrl = getProfilePhotoUrl(photoUrl, memberName);
-	    
-	    const htmlContent = `
-	        <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; background: white; border: 3px solid #3b82f6; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
-	            <img src="${processedPhotoUrl}" 
-	                 style="width: 100%; height: 100%; object-fit: cover; display: block;"
-	                 alt="${memberName}"
-	                 onerror="this.src='${generateInitialsPlaceholder(memberName)}'">
-	        </div>
-	    `;
-	
-	    return L.divIcon({
-	        className: '',
-	        html: htmlContent,
-	        iconSize: [48, 48],
-	        iconAnchor: [24, 24],  // Center of circle
-	        popupAnchor: [0, -24]   // 24px above center
-	    });
-	}
+    function createCustomIcon(memberName, photoUrl) {
+        const processedPhotoUrl = getProfilePhotoUrl(photoUrl, memberName);
+        
+        const htmlContent = `
+            <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; background: white; border: 3px solid #3b82f6; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+                <img src="${processedPhotoUrl}" 
+                     style="width: 100%; height: 100%; object-fit: cover; display: block;"
+                     alt="${memberName}"
+                     onerror="this.src='${generateInitialsPlaceholder(memberName)}'">
+            </div>
+        `;
+
+        return L.divIcon({
+            className: '',
+            html: htmlContent,
+            iconSize: [48, 48],
+            iconAnchor: [24, 24],  // Center of circle
+            popupAnchor: [0, -24]   // 24px above center
+        });
+    }
 
     function renderAllMarkers() {
         markers.forEach(marker => map.removeLayer(marker));
         markers = [];
 
-        allAlumniData.forEach(member => {
-            if (!member.coordinates) return;
-            
+        // Filter members with valid coordinates
+        const membersWithCoordinates = allAlumniData.filter(member => member.coordinates);
+        
+        console.log(`Rendering ${membersWithCoordinates.length} markers with coordinates`);
+
+        membersWithCoordinates.forEach(member => {
             const isBangladesh = isInBangladesh(member);
             const icon = createCustomIcon(member.name, member.photoUrl);
             const marker = L.marker(member.coordinates, { icon: icon }).addTo(map);
@@ -1022,9 +992,12 @@
                         <p style="margin: 4px 0; color: #374151; font-size: 14px;"><strong>Location:</strong> ${member.locationQuery || 'Not specified'}</p>
                         ${member.company ? `<p style="margin: 4px 0; color: #374151; font-size: 14px;"><strong>Company:</strong> ${member.company}</p>` : ''}
                         
-                        <div style="display: inline-flex; align-items: center; padding: 4px 8px; background: #f1f5f9; border-radius: 4px; font-size: 12px; margin-top: 8px;">
-                            <span style="margin-right: 8px;">${isBangladesh ? '🇧🇩 Bangladesh' : '🌍 International'}</span>
-                            <a href="${googleMapsLink}" target="_blank" style="color: #3b82f6; text-decoration: none; font-size: 12px; margin-left: 8px;">View on Maps</a>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                            <div style="display: inline-flex; align-items: center; padding: 4px 8px; background: #f1f5f9; border-radius: 4px; font-size: 12px;">
+                                <span>${isBangladesh ? '🇧🇩 Bangladesh' : '🌍 International'}</span>
+                                ${member.hasExactCoordinates ? '<span style="margin-left: 8px; color: #10b981;">✓ Exact Location</span>' : ''}
+                            </div>
+                            <a href="${googleMapsLink}" target="_blank" style="color: #3b82f6; text-decoration: none; font-size: 12px;">View on Maps</a>
                         </div>
                     </div>
                 </div>
@@ -1038,12 +1011,24 @@
         
         if (markers.length > 0) {
             map.fitBounds(getAllBounds());
+        } else {
+            // If no markers, ensure map is properly centered
+            map.setView([23.8103, 90.4125], 7);
         }
     }
 
     function isInBangladesh(member) {
+        // Check if coordinates are within Bangladesh bounds
+        if (member.coordinates) {
+            const [lat, lng] = member.coordinates;
+            return lat >= 20.5 && lat <= 26.5 && lng >= 88.0 && lng <= 92.5;
+        }
+        
+        // Fallback to text-based detection
         const locationQuery = member.locationQuery || '';
-        return locationQuery.toLowerCase().includes('bangladesh');
+        const workCountry = member.workCountry || '';
+        return locationQuery.toLowerCase().includes('bangladesh') || 
+               workCountry.toLowerCase().includes('bangladesh');
     }
 
     // Filter functions
@@ -1055,8 +1040,12 @@
 
     function showBangladeshAlumni() {
         const bangladeshMarkers = markers.filter(marker => {
-            const content = marker.getPopup().getContent();
-            return content.includes('🇧🇩 Bangladesh');
+            const member = allAlumniData.find(m => 
+                m.coordinates && 
+                m.coordinates[0] === marker.getLatLng().lat && 
+                m.coordinates[1] === marker.getLatLng().lng
+            );
+            return member && isInBangladesh(member);
         });
         
         markers.forEach(marker => map.removeLayer(marker));
@@ -1070,8 +1059,12 @@
 
     function showInternationalAlumni() {
         const internationalMarkers = markers.filter(marker => {
-            const content = marker.getPopup().getContent();
-            return content.includes('🌍 International');
+            const member = allAlumniData.find(m => 
+                m.coordinates && 
+                m.coordinates[0] === marker.getLatLng().lat && 
+                m.coordinates[1] === marker.getLatLng().lng
+            );
+            return member && !isInBangladesh(member);
         });
         
         markers.forEach(marker => map.removeLayer(marker));
@@ -1087,12 +1080,13 @@
 
     function updateMapCount(filter) {
         const total = allAlumniData.length;
-        const bangladeshCount = allAlumniData.filter(member => isInBangladesh(member)).length;
-        const internationalCount = total - bangladeshCount;
+        const membersWithCoordinates = allAlumniData.filter(member => member.coordinates).length;
+        const bangladeshCount = allAlumniData.filter(member => member.coordinates && isInBangladesh(member)).length;
+        const internationalCount = membersWithCoordinates - bangladeshCount;
 
         let countText = '';
         if (filter === 'all') {
-            countText = `Showing all ${total} alumni (${bangladeshCount} in Bangladesh, ${internationalCount} international)`;
+            countText = `Showing ${membersWithCoordinates} alumni with locations (${bangladeshCount} in Bangladesh, ${internationalCount} international)`;
         } else if (filter === 'bangladesh') {
             countText = `Showing ${bangladeshCount} alumni in Bangladesh`;
         } else if (filter === 'international') {
@@ -1115,5 +1109,4 @@
 </footer>
 
 </body>
-
 </html>
